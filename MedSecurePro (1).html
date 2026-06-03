@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MedSecure Pro — AI Medical QR Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tl:#14b8a6;--t:#0d9488;--td:#0f766e;--t8:#115e59;
+  --tbg:#f0fdfa;--tb:#ccfbf1;--tb2:#99f6e4;
+  --navy:#0c1a2e;--tx:#0f172a;--mu:#64748b;
+  --bd:#e2e8f0;--bg:#f8fafc;--wh:#ffffff;
+  --red:#dc2626;--rbg:#fef2f2;--rb:#fca5a5;
+  --amb:#d97706;--abg:#fffbeb;--abb:#fcd34d;
+  --grn:#16a34a;--gbg:#f0fdf4;--grb:#86efac;
+  --pur:#7c3aed;--pbg:#f5f3ff;--prb:#ddd6fe;
+  --or:#ea580c;--orbg:#fff7ed;--orb:#fed7aa;
+  --fh:'Sora',sans-serif;--fb:'Plus Jakarta Sans',sans-serif;
+  --r:14px;--r2:10px;--r3:9px;
+  --sh:0 2px 16px rgba(15,118,110,.07);
+  --shm:0 8px 32px rgba(15,118,110,.12);
+  --shl:0 20px 60px rgba(15,118,110,.16);
+}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh;overflow-x:hidden}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes puls{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ripple{0%{box-shadow:0 0 0 0 rgba(20,184,166,.4)}70%{box-shadow:0 0 0 18px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.a1{animation:fadeUp .5s ease both}
+.a2{animation:fadeUp .5s .1s ease both}
+.a3{animation:fadeUp .5s .2s ease both}
+.a4{animation:fadeUp .5s .3s ease both}
+.a5{animation:fadeUp .5s .42s ease both}
+.aFi{animation:fadeIn .3s ease both}
+.aFl{animation:floatY 3.6s ease-in-out infinite}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;
+  font-family:var(--fh);font-weight:700;border-radius:10px;transition:all .2s;
+  font-size:14px;padding:10px 20px;white-space:nowrap;text-decoration:none}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none !important}
+.bGr{background:linear-gradient(135deg,var(--tl),var(--td));color:#fff}
+.bGr:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,184,166,.38)}
+.bOu{background:transparent;color:var(--td);border:1.5px solid var(--tl)}
+.bOu:hover{background:var(--tbg)}
+.bRd{background:transparent;color:var(--red);border:1.5px solid var(--rb)}
+.bRd:hover{background:var(--rbg)}
+.bWh{background:#fff;color:var(--td);font-weight:700}
+.bWh:hover{background:var(--tbg)}
+.bPu{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff}
+.bPu:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(109,40,217,.3)}
+.bAm{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.bAm:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(217,119,6,.28)}
+.bOr{background:linear-gradient(135deg,#f97316,#ea580c);color:#fff}
+.bOr:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(234,88,12,.28)}
+.bSm{padding:7px 14px;font-size:12px;border-radius:8px}
+.bLg{padding:13px 30px;font-size:15px;border-radius:12px}
+
+/* ===== FORM CONTROLS ===== */
+.label{display:block;font-size:11px;font-weight:700;color:var(--navy);
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.inp,.sel,.ta{width:100%;padding:11px 13px;border:1.5px solid var(--bd);border-radius:9px;
+  font-family:var(--fb);font-size:13px;color:var(--tx);background:var(--bg);
+  outline:none;transition:border-color .2s,box-shadow .2s}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--tl);background:#fff;
+  box-shadow:0 0 0 3px rgba(20,184,166,.1)}
+.sel{cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.ta{resize:vertical;min-height:80px}
+.fgrp{margin-bottom:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+
+/* ===== CARDS ===== */
+.card{background:#fff;border-radius:var(--r);border:1px solid var(--bd);
+  box-shadow:var(--sh);margin-bottom:18px;overflow:hidden}
+.cardH{padding:18px 20px 0;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.cardIco{width:36px;height:36px;border-radius:9px;
+  background:linear-gradient(135deg,var(--tbg),var(--tb));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.cardTitle{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--navy);line-height:1.3}
+.cardSub{font-size:12px;color:var(--mu);margin-top:2px;line-height:1.5}
+.cardBody{padding:0 20px 20px}
+.divider{height:1px;background:var(--bd);margin:16px 0}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;
+  padding:11px 22px;border-radius:10px;display:flex;align-items:center;gap:9px;
+  font-family:var(--fh);font-size:13px;font-weight:700;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);animation:fadeUp .3s ease}
+.tOk{background:#fff;color:var(--td);border:1.5px solid var(--tb2)}
+.tErr{background:var(--rbg);color:#be123c;border:1.5px solid var(--rb)}
+.tInfo{background:var(--pbg);color:var(--pur);border:1.5px solid var(--prb)}
+
+/* ===== MODAL/OVERLAY ===== */
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(10,20,40,.82);
+  backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;
+  padding:20px;animation:fadeIn .25s ease}
+.modal{background:#fff;border-radius:22px;width:100%;max-width:430px;padding:36px;
+  position:relative;box-shadow:0 40px 80px rgba(0,0,0,.3);animation:slideDown .3s ease}
+.modalT{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modalS{font-size:13px;color:var(--mu);margin-bottom:20px}
+.closeBtn{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+  background:var(--bg);border:1px solid var(--bd);cursor:pointer;color:var(--mu);
+  display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;
+  transition:all .2s;font-family:Arial}
+.closeBtn:hover{background:var(--bd);color:var(--tx)}
+.switchRow{text-align:center;margin-top:14px;font-size:13px;color:var(--mu)}
+.switchLink{color:var(--td);font-weight:700;cursor:pointer}
+.switchLink:hover{text-decoration:underline}
+.demoHint{background:var(--tbg);border:1px solid var(--tb);border-radius:9px;
+  padding:10px 13px;margin-bottom:16px;font-size:12px;color:var(--td);line-height:1.6}
+
+/* ===== TOP NAV ===== */
+.topNav{position:sticky;top:0;z-index:100;height:62px;padding:0 28px;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(20,184,166,.12);
+  display:flex;align-items:center;justify-content:space-between}
+.brandLogo{display:flex;align-items:center;gap:9px;cursor:pointer;text-decoration:none}
+.brandBox{width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--tl),var(--td));
+  display:flex;align-items:center;justify-content:center}
+.brandName{font-family:var(--fh);font-weight:800;font-size:17px;color:var(--td)}
+.navLinks{display:flex;align-items:center;gap:22px}
+.navLink{color:var(--mu);font-size:14px;font-weight:500;cursor:pointer;transition:color .2s;
+  background:none;border:none;font-family:var(--fb)}
+.navLink:hover{color:var(--td)}
+
+/* ===== HERO ===== */
+.heroSection{min-height:calc(100vh - 62px);padding:70px 24px 60px;
+  background:linear-gradient(158deg,var(--tbg) 0%,#fff 44%,var(--tbg) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden}
+.heroSection::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(20,184,166,.13) 0%,transparent 60%),
+  radial-gradient(ellipse 45% 40% at 90% 90%,rgba(15,118,110,.08) 0%,transparent 60%)}
+.heroBadge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.28);
+  color:var(--td);font-family:var(--fh);font-size:12px;font-weight:700;
+  padding:6px 16px;border-radius:100px;margin-bottom:20px}
+.heroDot{width:7px;height:7px;border-radius:50%;background:var(--tl);animation:puls 2s infinite}
+.heroH{font-family:var(--fh);font-size:clamp(30px,5.5vw,58px);font-weight:800;
+  text-align:center;line-height:1.1;color:var(--navy);max-width:720px}
+.heroH em{font-style:normal;
+  background:linear-gradient(135deg,var(--tl),var(--td));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.heroP{margin-top:14px;font-size:15px;color:var(--mu);text-align:center;
+  max-width:480px;line-height:1.65}
+.ctaRow{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;justify-content:center}
+
+/* Demo card */
+.demoWrap{margin-top:44px;position:relative;display:flex;align-items:flex-start}
+.demoCard{background:#fff;border-radius:15px;box-shadow:var(--shl);padding:18px;
+  width:268px;border:1px solid rgba(20,184,166,.12)}
+.demoCardTop{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.demoAv{width:36px;height:36px;border-radius:9px;
+  background:linear-gradient(135deg,var(--tl),var(--td));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:var(--fh);font-weight:700;font-size:13px}
+.demoRow{display:flex;justify-content:space-between;padding:7px 0;
+  border-bottom:1px solid var(--bd);font-size:12px}
+.demoRow:last-child{border-bottom:none}
+.dL{color:var(--mu)}.dV{font-weight:700;color:var(--td);font-family:var(--fh)}
+.qrBubble{background:#fff;border-radius:12px;padding:11px;box-shadow:var(--shl);
+  border:1px solid rgba(20,184,166,.15);position:absolute;top:-14px;right:-50px;
+  display:flex;flex-direction:column;align-items:center;gap:4px}
+.qrBubbleLabel{font-family:var(--fh);font-size:9px;font-weight:700;
+  color:var(--t);text-transform:uppercase;letter-spacing:.07em}
+
+/* ===== FEATURE GRID ===== */
+.sectionWrap{padding:72px 24px;max-width:1120px;margin:0 auto}
+.sTitle{font-family:var(--fh);font-size:clamp(26px,3.5vw,42px);font-weight:800;
+  text-align:center;color:var(--navy);margin-bottom:8px}
+.sSub{text-align:center;color:var(--mu);font-size:14px;margin-bottom:40px;
+  max-width:460px;margin-left:auto;margin-right:auto;line-height:1.6}
+.featGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.featCard{background:#fff;border-radius:14px;padding:22px;border:1px solid var(--bd);
+  transition:all .3s;cursor:default}
+.featCard:hover{transform:translateY(-4px);box-shadow:var(--shl);border-color:rgba(20,184,166,.3)}
+.featIco{font-size:28px;margin-bottom:12px}
+.featTitle{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.featDesc{font-size:12px;color:var(--mu);line-height:1.6}
+
+/* ===== DARK SECTION ===== */
+.darkSec{background:linear-gradient(158deg,var(--navy),#1a3352);padding:64px 24px}
+.techGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));
+  gap:14px;max-width:970px;margin:0 auto}
+.techCard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:18px}
+
+/* Steps */
+.stepsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:32px;max-width:860px;margin:0 auto}
+.step{text-align:center}
+.stepNum{width:50px;height:50px;border-radius:50%;background:rgba(20,184,166,.15);
+  border:1px solid rgba(20,184,166,.3);display:flex;align-items:center;justify-content:center;
+  margin:0 auto 13px;font-family:var(--fh);font-size:18px;font-weight:800;color:var(--tl)}
+
+/* ===== CTA + FOOTER ===== */
+.ctaSec{background:linear-gradient(135deg,var(--t),var(--t8));padding:64px 24px;text-align:center;color:#fff}
+footer{background:var(--navy);color:rgba(255,255,255,.38);padding:30px 24px;text-align:center;font-size:12px}
+
+/* ===== DASHBOARD ===== */
+.dashWrap{min-height:100vh;background:var(--bg)}
+.dashNav{background:#fff;border-bottom:1px solid var(--bd);padding:0 24px;height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50}
+.dashHead{background:linear-gradient(135deg,var(--td),var(--navy));color:#fff;padding:18px 24px}
+.dashLayout{display:flex;max-width:1160px;margin:0 auto;width:100%;padding:20px 16px;gap:18px}
+.sidebar{width:185px;flex-shrink:0;position:sticky;top:80px;height:fit-content}
+.mainArea{flex:1;min-width:0}
+.sideGrp{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.07em;padding:8px 12px 4px;margin-top:6px;display:block}
+.sideGrp:first-child{margin-top:0}
+.sideTab{width:100%;padding:9px 12px;border-radius:9px;background:transparent;border:none;
+  cursor:pointer;font-family:var(--fb);font-size:12.5px;font-weight:500;color:var(--mu);
+  transition:all .2s;display:flex;align-items:center;gap:8px;margin-bottom:3px;text-align:left}
+.sideTab.active{background:var(--tbg);color:var(--td);font-weight:700;border:1px solid var(--tb)}
+.sideTab:hover:not(.active){background:var(--bg);color:var(--tx)}
+.sideTabIco{font-size:15px;width:22px;text-align:center;flex-shrink:0}
+.userChip{display:inline-flex;align-items:center;gap:6px;background:var(--tbg);
+  border:1px solid var(--tb);border-radius:100px;padding:3px 11px 3px 4px;
+  font-family:var(--fh);font-size:12px;font-weight:700;color:var(--td)}
+.userDot{width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,var(--tl),var(--td));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:800}
+
+/* ===== QR SIDE PANEL ===== */
+.qrPanel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);
+  box-shadow:var(--sh);padding:20px;text-align:center;margin-bottom:18px}
+.qrRing{background:linear-gradient(135deg,var(--tbg),#fff);border:2px solid var(--tb);
+  border-radius:13px;padding:12px;margin:10px auto;width:fit-content;
+  animation:ripple 3.2s ease infinite}
+.qrSummRow{display:flex;justify-content:space-between;padding:5px 0;
+  border-bottom:1px solid var(--bd);font-size:11px}
+.qrSummRow:last-child{border-bottom:none}
+
+/* ===== PROFILE ===== */
+.profileGrid{display:grid;grid-template-columns:1fr 275px;gap:18px}
+
+/* ===== SCANNER ===== */
+.dropZone{border:2px dashed var(--tl);border-radius:13px;padding:32px 20px;
+  text-align:center;background:var(--tbg);cursor:pointer;transition:all .2s;
+  position:relative}
+.dropZone:hover{border-color:var(--td);background:var(--tb)}
+.scanResult{background:#fff;border:1px solid var(--bd);border-radius:13px;
+  padding:18px;margin-top:14px;animation:fadeUp .3s ease}
+
+/* ===== AI ANALYZER ===== */
+.riskBadge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;
+  border-radius:100px;font-family:var(--fh);font-size:12px;font-weight:700}
+.rLow{background:var(--gbg);color:var(--grn);border:1px solid var(--grb)}
+.rMed{background:var(--abg);color:var(--amb);border:1px solid var(--abb)}
+.rHigh{background:var(--rbg);color:var(--red);border:1px solid var(--rb)}
+.rCrit{background:var(--pbg);color:var(--pur);border:1px solid var(--prb)}
+.aiTabs{display:flex;gap:2px;background:var(--bg);border-radius:9px;padding:3px;margin-bottom:16px;flex-wrap:wrap}
+.aiTab{padding:7px 13px;border-radius:7px;font-family:var(--fh);font-size:11px;font-weight:700;
+  cursor:pointer;transition:all .2s;color:var(--mu);border:none;background:transparent}
+.aiTab.active{background:#fff;color:var(--td);box-shadow:0 1px 5px rgba(0,0,0,.08)}
+.testRow{display:flex;align-items:flex-start;gap:9px;padding:10px 0;
+  border-bottom:1px solid var(--bd);font-size:12px}
+.testRow:last-child{border-bottom:none}
+.spinner{width:17px;height:17px;border:2px solid var(--tb);border-top-color:var(--t);
+  border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
+
+/* ===== GENERATOR ===== */
+.qrGallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:14px;margin-top:14px}
+.qrGCard{background:#fff;border-radius:12px;border:1px solid var(--bd);padding:14px;
+  text-align:center;cursor:pointer;transition:all .2s}
+.qrGCard:hover{transform:translateY(-3px);box-shadow:var(--shm);border-color:rgba(20,184,166,.3)}
+
+/* ===== HUB ===== */
+.hubGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:13px}
+.hubCard{border-radius:12px;border:1px solid var(--bd);padding:15px;
+  transition:all .2s;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
+.hubCard:hover{transform:translateY(-3px);box-shadow:var(--shm)}
+.hubIco{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:19px;flex-shrink:0}
+.hubName{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.hubSub{font-size:11px;color:var(--mu);line-height:1.5}
+.hubLoc{font-size:11px;color:var(--t);margin-top:5px;font-weight:600}
+.tag{display:inline-flex;background:var(--tbg);color:var(--td);font-size:9px;
+  font-weight:700;padding:2px 7px;border-radius:100px;border:1px solid var(--tb);margin-top:5px}
+.medTag{display:inline-flex;font-size:9px;font-weight:700;padding:2px 8px;
+  border-radius:100px;margin-top:5px}
+.expandBox{border:2px solid var(--tb);border-radius:14px;padding:18px;margin-top:14px;
+  display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:#fff;animation:fadeUp .3s ease}
+
+/* ===== ANALYTICS ===== */
+.statsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.statCard{background:#fff;border-radius:12px;padding:16px;border:1px solid var(--bd);text-align:center}
+.statLabel{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.statValue{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--td)}
+.analyticsChart{position:relative;height:260px;margin-top:8px}
+.pieLegend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:12px}
+
+/* ===== ID CARD ===== */
+.idCardWrap{background:linear-gradient(135deg,var(--navy),#1a3352);border-radius:18px;
+  padding:24px;max-width:380px;margin:0 auto;color:#fff;position:relative;overflow:hidden;
+  box-shadow:var(--shl)}
+.idCardWrap::after{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;
+  border-radius:50%;background:rgba(20,184,166,.1);pointer-events:none}
+.idAvatar{width:62px;height:62px;border-radius:14px;
+  background:linear-gradient(135deg,var(--tl),var(--t));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:22px;font-weight:800;color:#fff;
+  border:2px solid rgba(255,255,255,.2)}
+.idFields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}
+.idField{background:rgba(255,255,255,.08);border-radius:9px;padding:10px}
+.idFieldLabel{font-size:8px;font-weight:700;opacity:.45;text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:3px}
+.idFieldVal{font-family:var(--fh);font-size:12px;font-weight:700}
+.idQRbox{background:rgba(255,255,255,.96);border-radius:10px;padding:8px;
+  display:flex;flex-direction:column;align-items:center;gap:3px}
+.idBar{height:3px;border-radius:100px;background:rgba(255,255,255,.1);margin-top:15px;overflow:hidden}
+.idBarFill{height:100%;background:linear-gradient(90deg,var(--tl),var(--t));border-radius:100px}
+
+/* ===== DOCTOR VIEW ===== */
+.doctorCard{background:#fff;border-radius:var(--r);border:1px solid var(--bd);
+  box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.medTimeline{position:relative;padding-left:24px}
+.medTimeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;
+  width:2px;background:var(--tb)}
+.timelineItem{position:relative;margin-bottom:16px}
+.timelineItem::before{content:'';position:absolute;left:-20px;top:6px;
+  width:8px;height:8px;border-radius:50%;background:var(--tl);border:2px solid #fff;
+  box-shadow:0 0 0 2px var(--tl)}
+
+/* ===== PUBLIC PROFILE ===== */
+.pubWrap{min-height:100vh;background:linear-gradient(160deg,var(--tbg) 0%,#fff 55%)}
+.pubHero{background:linear-gradient(135deg,var(--td),var(--navy));color:#fff;
+  padding:40px 24px 68px;text-align:center;position:relative;overflow:hidden}
+.pubHero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% -10%,rgba(20,184,166,.22) 0%,transparent 70%)}
+.pubAvatar{width:80px;height:80px;border-radius:20px;
+  background:linear-gradient(135deg,var(--tl),var(--td));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 13px;font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;
+  border:3px solid rgba(255,255,255,.2);box-shadow:0 14px 36px rgba(0,0,0,.26);position:relative}
+.pubName{font-family:var(--fh);font-size:26px;font-weight:800;position:relative}
+.pubMeta{display:flex;gap:14px;justify-content:center;margin-top:9px;
+  font-size:12px;color:rgba(255,255,255,.62);position:relative;flex-wrap:wrap}
+.pubBody{max-width:660px;margin:-34px auto 0;padding:0 16px 52px;position:relative;z-index:1}
+.pubInfoBlock{background:#fff;border-radius:12px;border:1px solid var(--bd);
+  margin-bottom:12px;overflow:hidden}
+.pubInfoHd{padding:11px 16px;background:var(--tbg);border-bottom:1px solid var(--tb);
+  font-family:var(--fh);font-size:12px;font-weight:700;color:var(--td)}
+.pubInfoBd{padding:14px 16px;font-size:13px;color:var(--tx);line-height:1.7}
+.sosBox{background:linear-gradient(135deg,#fef2f2,#fff8f8);border:1px solid #fecdd3;
+  border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:11px}
+.verBadge{display:inline-flex;align-items:center;gap:5px;
+  background:rgba(20,184,166,.12);color:var(--tl);font-size:10px;font-weight:700;
+  padding:3px 10px;border-radius:100px;border:1px solid rgba(20,184,166,.25);
+  margin-top:8px;position:relative}
+
+/* ===== APPOINTMENTS ===== */
+.apptCard{background:#fff;border-radius:12px;border:1px solid var(--bd);padding:14px;
+  display:flex;gap:13px;align-items:flex-start;margin-bottom:11px;transition:all .2s}
+.apptCard:hover{box-shadow:var(--shm)}
+.apptDate{width:52px;height:52px;border-radius:10px;
+  background:linear-gradient(135deg,var(--tbg),var(--tb));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:800px){
+  .profileGrid{grid-template-columns:1fr}
+  .dashLayout{flex-direction:column}
+  .sidebar{width:100%;position:static;display:flex;flex-wrap:wrap;gap:4px}
+  .sideGrp{display:none}
+  .sideTab{width:auto;flex:1;justify-content:center;min-width:80px}
+}
+@media(max-width:580px){
+  .topNav{padding:0 16px}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .demoWrap{display:none}
+  .navLinks{display:none}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<canvas id="qrCanvas" style="display:none"></canvas>
+
+<script>
+// ============================================================
+//  CONSTANTS & DATA
+// ============================================================
+const BLOOD = ['A+','A-','B+','B-','O+','O-','AB+','AB-'];
+const REPORT_TYPES = ['CBC','LFT','RFT','Lipid Panel','HbA1c','Thyroid Panel','Urine Analysis','Coagulation','Kidney Function','Liver Function'];
+const ini = n => n ? n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '??';
+const uid = () => 'u' + Math.random().toString(36).slice(2,10);
+const rid = () => 'R' + Date.now().toString(36).slice(-7).toUpperCase();
+const qrSrc = (data, sz=165) =>
+  `https://api.qrserver.com/v1/create-qr-code/?size=${sz}x${sz}&data=${encodeURIComponent(data)}&color=0f766e&bgcolor=f0fdfa&qzone=2&margin=0`;
+const fmt = d => new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+
+const SEED_USER = {
+  id:'demo-001',name:'Arjun Kumar',email:'arjun@demo.com',password:'demo123',
+  age:'24',bloodGroup:'B+',emergencyContact:'+91 98765 43210',
+  conditions:'Mild Asthma',allergies:'Penicillin, Dust Mites',
+  medications:'Salbutamol Inhaler (as needed)',
+  notes:'Regular checkups every 6 months. Avoid cold environments.',
+  createdAt:'2026-01-15',dob:'2002-03-10',gender:'Male',
+  weight:'72kg',height:'178cm',phone:'+91 98765 43210'
+};
+
+const DEPARTMENTS = [
+  {id:'d1',e:'🚨',n:'Emergency',s:'24/7 Critical Care',loc:'Ground Floor',c:'Ext. 100',bg:'#fef2f2',ib:'#fee2e2',desc:'Immediate care for life-threatening emergencies, trauma, and acute medical conditions.'},
+  {id:'d2',e:'❤️',n:'Cardiology',s:'Heart & Vascular',loc:'2nd Floor, Block A',c:'Ext. 210',bg:'#fff5f5',ib:'#fecdd3',desc:'Diagnosis and treatment of heart diseases including ECG, echocardiography, and cardiac surgery.'},
+  {id:'d3',e:'🧠',n:'Neurology',s:'Brain & Nervous System',loc:'3rd Floor, Block B',c:'Ext. 320',bg:'#faf5ff',ib:'#e9d5ff',desc:'Diagnosis and treatment of neurological disorders including stroke, epilepsy, and Parkinson\'s.'},
+  {id:'d4',e:'🔬',n:'Laboratory',s:'Diagnostics & Pathology',loc:'Basement, Block C',c:'Ext. 040',bg:'#f0fdf4',ib:'#bbf7d0',desc:'Comprehensive blood tests, urine analysis, histopathology, and microbiological tests.'},
+  {id:'d5',e:'📡',n:'Radiology',s:'X-Ray, MRI, CT Scan',loc:'1st Floor, Block D',c:'Ext. 150',bg:'#eff6ff',ib:'#bfdbfe',desc:'Advanced imaging including MRI, CT scan, PET scan, ultrasound, and digital X-ray.'},
+  {id:'d6',e:'💊',n:'Pharmacy',s:'Medicines & Dispensary',loc:'Ground Floor, Block E',c:'Ext. 060',bg:'#fffbeb',ib:'#fde68a',desc:'24/7 dispensary for all prescribed and over-the-counter medicines with expert pharmacist consultation.'},
+  {id:'d7',e:'🏃',n:'Physiotherapy',s:'Rehab & Movement',loc:'4th Floor, Block A',c:'Ext. 440',bg:'#f0fdf4',ib:'#bbf7d0',desc:'Rehabilitation for musculoskeletal disorders, post-surgery recovery, and sports injuries.'},
+  {id:'d8',e:'🧪',n:'ICU',s:'Intensive Care Unit',loc:'5th Floor, Block F',c:'Ext. 500',bg:'#fffbeb',ib:'#fde68a',desc:'Advanced life support and monitoring for critically ill patients with 24/7 specialist care.'},
+  {id:'d9',e:'👁️',n:'Ophthalmology',s:'Eye Care',loc:'2nd Floor, Block C',c:'Ext. 230',bg:'#eff6ff',ib:'#bfdbfe',desc:'Comprehensive eye care including LASIK, cataract surgery, and retinal disorders.'},
+  {id:'d10',e:'🦷',n:'Dental',s:'Oral Health',loc:'1st Floor, Block B',c:'Ext. 120',bg:'#fdf4ff',ib:'#e9d5ff',desc:'Complete dental care including orthodontics, implants, root canal treatment, and cosmetic dentistry.'},
+  {id:'d11',e:'🫁',n:'Pulmonology',s:'Respiratory Medicine',loc:'3rd Floor, Block A',c:'Ext. 330',bg:'#f0fdf4',ib:'#bbf7d0',desc:'Diagnosis and treatment of respiratory conditions including asthma, COPD, and sleep apnea.'},
+  {id:'d12',e:'🩺',n:'General Medicine',s:'OPD & Consultation',loc:'Ground Floor, Block A',c:'Ext. 010',bg:'#f8fafc',ib:'#e2e8f0',desc:'General outpatient consultations for all common medical conditions and health checkups.'},
+];
+
+const MEDICINES = [
+  {id:'m1',n:'Paracetamol 500mg',t:'OTC',d:'1 tab every 6 hrs (max 4/day)',u:'Fever, mild to moderate pain',s:'Nausea, liver damage (overdose)',cat:'Analgesic'},
+  {id:'m2',n:'Amoxicillin 500mg',t:'Rx',d:'1 capsule every 8 hrs × 5-7 days',u:'Bacterial infections, UTI, pneumonia',s:'Allergic reactions, diarrhea, rash',cat:'Antibiotic'},
+  {id:'m3',n:'Metformin 500mg',t:'Rx',d:'1 tab twice daily with meals',u:'Type 2 Diabetes management',s:'GI upset, lactic acidosis (rare)',cat:'Antidiabetic'},
+  {id:'m4',n:'Lisinopril 10mg',t:'Rx',d:'1 tab once daily in morning',u:'Hypertension, Heart failure, Kidney protection',s:'Dry cough, dizziness, hyperkalemia',cat:'ACE Inhibitor'},
+  {id:'m5',n:'Atorvastatin 20mg',t:'Rx',d:'1 tab at bedtime daily',u:'High cholesterol, Cardiovascular prevention',s:'Muscle pain, liver enzyme elevation',cat:'Statin'},
+  {id:'m6',n:'Cetirizine 10mg',t:'OTC',d:'1 tab once daily at night',u:'Allergies, hay fever, urticaria',s:'Drowsiness, dry mouth, headache',cat:'Antihistamine'},
+  {id:'m7',n:'Omeprazole 20mg',t:'OTC',d:'1 cap before breakfast daily',u:'Acid reflux, peptic ulcer, GERD',s:'Headache, diarrhea, B12 deficiency (long-term)',cat:'PPI'},
+  {id:'m8',n:'Azithromycin 500mg',t:'Rx',d:'1 tab once daily × 3 days',u:'Respiratory infections, STIs',s:'GI upset, QT prolongation (rare)',cat:'Antibiotic'},
+];
+
+const ACTIVITIES = [
+  {e:'💉',n:'Blood Draw (Venipuncture)',d:'CBC, LFT, RFT, HbA1c, Lipid Panel',t:'10–15 min',dept:'Laboratory',prep:'Fast 8-12 hrs for fasting tests'},
+  {e:'⚡',n:'ECG / EKG',d:'12-lead electrocardiogram for heart rhythm',t:'5–10 min',dept:'Cardiology',prep:'No special preparation needed'},
+  {e:'🫁',n:'Chest X-Ray',d:'PA view, lateral view if indicated',t:'10 min',dept:'Radiology',prep:'Remove metal jewelry and clothing'},
+  {e:'🏋️',n:'Physiotherapy Session',d:'Therapeutic exercise & manual therapy',t:'45–60 min',dept:'Physiotherapy',prep:'Wear comfortable, loose clothing'},
+  {e:'🩺',n:'24hr BP Monitoring',d:'Ambulatory blood pressure monitoring',t:'24 hours',dept:'Cardiology',prep:'Avoid strenuous exercise during test'},
+  {e:'🧬',n:'MRI Scan',d:'Soft tissue, brain, spine imaging',t:'45–90 min',dept:'Radiology',prep:'Remove all metal items, no pacemakers'},
+  {e:'🔬',n:'Biopsy / FNAC',d:'Fine needle aspiration cytology',t:'15–20 min',dept:'Pathology',prep:'Inform about blood thinners'},
+  {e:'👁️',n:'Fundoscopy',d:'Retinal examination with dilation',t:'20 min',dept:'Ophthalmology',prep:'Bring sunglasses, vision may blur 2-4 hrs'},
+];
+
+const APPOINTMENTS = [
+  {id:'ap1',doc:'Dr. Priya Sharma',dept:'Cardiology',date:'2026-04-05',time:'10:30 AM',type:'Follow-up',status:'upcoming'},
+  {id:'ap2',doc:'Dr. Rajesh Kumar',dept:'General Medicine',date:'2026-03-20',time:'11:00 AM',type:'Consultation',status:'completed'},
+  {id:'ap3',doc:'Dr. Anjali Singh',dept:'Pulmonology',date:'2026-02-15',time:'09:00 AM',type:'Consultation',status:'completed'},
+];
+
+const SAMPLE_REPORT = `Patient: Arjun Kumar | Age: 24 | Date: 2026-03-20 | Lab: AIIMS Patna | Ref: Dr. Priya Sharma
+
+COMPLETE BLOOD COUNT (CBC):
+Hemoglobin: 11.2 g/dL [Normal: 13.5-17.5]
+WBC Count: 11500 /uL [Normal: 4500-11000]
+Platelet Count: 155000 /uL [Normal: 150000-400000]
+RBC Count: 4.1 million/uL [Normal: 4.5-5.9]
+Hematocrit (PCV): 34% [Normal: 41-53%]
+MCV: 72 fL [Normal: 80-100]
+MCH: 24 pg [Normal: 27-33]
+Neutrophils: 72% [Normal: 40-70%]
+Lymphocytes: 20% [Normal: 20-40%]
+
+BLOOD CHEMISTRY:
+Fasting Blood Glucose: 98 mg/dL [Normal: 70-100]
+Total Cholesterol: 220 mg/dL [Normal: <200]
+LDL Cholesterol: 145 mg/dL [Normal: <130]
+HDL Cholesterol: 42 mg/dL [Normal: >40 Male]
+Triglycerides: 168 mg/dL [Normal: <150]
+Serum Creatinine: 0.9 mg/dL [Normal: 0.6-1.2]
+SGPT (ALT): 28 U/L [Normal: 7-40]
+SGOT (AST): 22 U/L [Normal: 10-40]
+Serum Uric Acid: 7.8 mg/dL [Normal: 3.5-7.2 Male]`;
+
+// ============================================================
+//  STATE
+// ============================================================
+const STATE = {
+  page: 'land',
+  tab: 'profile',
+  user: null,
+  users: [Object.assign({}, SEED_USER)],
+  reports: [],
+  genQRs: [],
+  appointments: [...APPOINTMENTS],
+  showAuth: false,
+  authMode: 'login',
+  af: {name:'', email:'', password:'', confirmPw:''},
+  pf: {name:'',age:'',bloodGroup:'O+',emergencyContact:'',conditions:'',allergies:'',medications:'',notes:'',dob:'',gender:'Male',weight:'',height:'',phone:''},
+  toastData: null,
+  analyzing: false,
+  aiResult: null,
+  aiTab: 'table',
+  scanResult: null,
+  pubId: null,
+  qrDetailId: null,
+  genForm: {company:'',patient:'',reportType:'CBC',notes:'',contact:'',doctorName:''},
+  selDept: null,
+  selMed: null,
+  selActivity: null,
+  analyticsTab: 'overview',
+  showApptForm: false,
+  newAppt: {doc:'',dept:'',date:'',time:'',type:'Consultation'},
+  searchQuery: '',
+};
+
+let chartInstance = null;
+let pieChart = null;
+let toastTimer = null;
+
+// Temp store for objects (avoid JSON in onclick attrs)
+const STORE = {};
+let storeKey = 0;
+function stash(obj) { const k = 'sk_' + (++storeKey); STORE[k] = obj; return k; }
+function unstash(k) { return STORE[k] || null; }
+
+// ============================================================
+//  UTILITY
+// ============================================================
+function showToast(msg, type='ok') {
+  if (toastTimer) clearTimeout(toastTimer);
+  STATE.toastData = {msg, type};
+  render();
+  toastTimer = setTimeout(() => { STATE.toastData = null; render(); }, 3500);
+}
+
+function update(changes) {
+  Object.assign(STATE, changes);
+  render();
+}
+
+function renderTab() {
+  const el = document.getElementById('tabContent');
+  if (!el) return;
+  const tabs = {
+    profile: renderProfile,
+    scanner: renderScanner,
+    analyzer: renderAnalyzer,
+    generator: renderGenerator,
+    hub: renderHub,
+    idcard: renderIDCard,
+    analytics: renderAnalytics,
+    appointments: renderAppointments,
+    doctor: renderDoctorView,
+  };
+  const fn = tabs[STATE.tab] || renderProfile;
+  el.innerHTML = fn();
+  if (STATE.tab === 'analyzer' && STATE.aiResult && STATE.aiTab === 'chart') {
+    setTimeout(drawAIChart, 150);
+  }
+  if (STATE.tab === 'analytics') {
+    setTimeout(drawAnalyticsCharts, 150);
+  }
+}
+
+// ============================================================
+//  AUTH
+// ============================================================
+function doAuth() {
+  if (STATE.authMode === 'login') {
+    const u = STATE.users.find(u => u.email === STATE.af.email && u.password === STATE.af.password);
+    if (!u) { showToast('Invalid email or password', 'err'); return; }
+    const pf = {
+      name:u.name,age:u.age||'',bloodGroup:u.bloodGroup||'O+',
+      emergencyContact:u.emergencyContact||'',conditions:u.conditions||'',
+      allergies:u.allergies||'',medications:u.medications||'',notes:u.notes||'',
+      dob:u.dob||'',gender:u.gender||'Male',weight:u.weight||'',height:u.height||'',phone:u.phone||''
+    };
+    update({user:u, pf, showAuth:false, page:'dash', tab:'profile'});
+    showToast('Welcome back, ' + u.name.split(' ')[0] + '! 👋');
+  } else {
+    if (!STATE.af.name || !STATE.af.email || !STATE.af.password) {
+      showToast('Please fill all required fields', 'err'); return;
+    }
+    if (STATE.af.password.length < 6) {
+      showToast('Password must be at least 6 characters', 'err'); return;
+    }
+    if (STATE.users.find(u => u.email === STATE.af.email)) {
+      showToast('Email already registered', 'err'); return;
+    }
+    const nu = {
+      id: uid(), name: STATE.af.name, email: STATE.af.email,
+      password: STATE.af.password, age:'', bloodGroup:'O+',
+      emergencyContact:'', conditions:'', allergies:'', medications:'',
+      notes:'', dob:'', gender:'Male', weight:'', height:'', phone:'',
+      createdAt: new Date().toISOString().slice(0,10)
+    };
+    STATE.users.push(nu);
+    update({
+      user: nu,
+      pf:{name:nu.name,age:'',bloodGroup:'O+',emergencyContact:'',conditions:'',allergies:'',medications:'',notes:'',dob:'',gender:'Male',weight:'',height:'',phone:''},
+      showAuth: false, page: 'dash', tab: 'profile'
+    });
+    showToast('Welcome to MedSecure Pro, ' + nu.name.split(' ')[0] + '! 🎉');
+  }
+}
+
+function doSave() {
+  if (!STATE.pf.name) { showToast('Name is required', 'err'); return; }
+  const u2 = Object.assign({}, STATE.user, STATE.pf);
+  STATE.users = STATE.users.map(u => u.id === STATE.user.id ? u2 : u);
+  update({user: u2});
+  showToast('Profile saved successfully! ✓');
+}
+
+function logout() {
+  update({user:null, page:'land', tab:'profile', aiResult:null, scanResult:null, reports:[], genQRs:[]});
+}
+
+// ============================================================
+//  QR SCANNER
+// ============================================================
+function handleQRUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    const canvas = document.getElementById('qrCanvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+    if (code) {
+      let matched = null;
+      STATE.users.forEach(u => {
+        if (code.data.includes(u.id) || code.data.toLowerCase().includes(u.name.toLowerCase())) {
+          matched = u;
+        }
+      });
+      update({scanResult:{decoded: code.data, matched}});
+      showToast('QR Code decoded successfully! ✓');
+    } else {
+      update({scanResult:{error:'No QR code found. Try a clearer image or better lighting.'}});
+      showToast('No QR code detected in image', 'err');
+    }
+    renderTab();
+  };
+  img.onerror = () => { showToast('Could not load image file', 'err'); URL.revokeObjectURL(url); };
+  img.src = url;
+}
+
+// ============================================================
+//  AI ANALYZER
+// ============================================================
+async function runAnalysis() {
+  const el = document.getElementById('reportInput');
+  const text = el ? el.value.trim() : '';
+  if (text.length < 30) { showToast('Please enter a lab report first', 'err'); return; }
+  update({analyzing:true, aiResult:null});
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: `You are a medical lab report analyzer. Analyze the following lab report carefully.\nReturn ONLY valid JSON, no markdown fences, no explanation outside JSON.\n\nLab Report:\n${text}\n\nReturn this exact structure:\n{\n  "patientName": "name if found",\n  "testDate": "date if found",\n  "tests": [\n    {\n      "name": "Test Name",\n      "value": "numeric value as string",\n      "unit": "unit",\n      "normalRange": "range string",\n      "status": "normal|high|low|critical",\n      "interpretation": "brief clinical note"\n    }\n  ],\n  "summary": "2-3 sentence clinical summary",\n  "riskLevel": "low|medium|high|critical",\n  "urgentFindings": ["list urgent findings if any"],\n  "recommendations": ["specific actionable recommendations"],\n  "diagnosisHints": ["possible conditions based on values"],\n  "followUpTests": ["tests to consider"],\n  "dietaryAdvice": ["dietary recommendations"]\n}`
+        }]
+      })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    let txt = (data.content || []).map(i => i.text || '').join('');
+    txt = txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+    const result = JSON.parse(txt);
+    update({analyzing:false, aiResult:result, aiTab:'table'});
+    showToast('AI analysis complete! 🧬');
+    setTimeout(drawAIChart, 150);
+  } catch(e) {
+    update({analyzing:false});
+    console.error('Analysis error:', e);
+    showToast('Analysis failed. Check report format and try again.', 'err');
+  }
+}
+
+function drawAIChart() {
+  if (!STATE.aiResult || STATE.aiTab !== 'chart') return;
+  const ctx = document.getElementById('aiChartCanvas');
+  if (!ctx) return;
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  const tests = (STATE.aiResult.tests || []).filter(t => !isNaN(parseFloat(t.value))).slice(0, 12);
+  const colors = tests.map(t => (
+    t.status === 'critical' ? '#7c3aed' :
+    t.status === 'high' ? '#ef4444' :
+    t.status === 'low' ? '#f59e0b' : '#14b8a6'
+  ));
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: tests.map(t => t.name.length > 14 ? t.name.slice(0,13) + '…' : t.name),
+      datasets: [{
+        data: tests.map(t => Math.abs(parseFloat(t.value)) || 0),
+        backgroundColor: colors, borderRadius: 7, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {display:false},
+        tooltip: {
+          callbacks: {
+            label: c => `Value: ${tests[c.dataIndex]?.value} ${tests[c.dataIndex]?.unit || ''}`,
+            afterLabel: c => `Range: ${tests[c.dataIndex]?.normalRange || '—'}`
+          }
+        }
+      },
+      scales: {
+        y: {beginAtZero:false, grid:{color:'rgba(0,0,0,.05)'}, ticks:{font:{size:11}}},
+        x: {grid:{display:false}, ticks:{font:{size:10}, maxRotation:45}}
+      }
+    }
+  });
+}
+
+function saveReportQR() {
+  if (!STATE.aiResult) return;
+  STATE.reports.push({
+    id: rid(),
+    patientName: STATE.pf.name || STATE.user.name,
+    type: STATE.aiResult.testDate ? 'Report ' + STATE.aiResult.testDate : 'AI Report',
+    date: new Date().toISOString().slice(0,10),
+    riskLevel: STATE.aiResult.riskLevel,
+    testCount: (STATE.aiResult.tests || []).length,
+    abnormalCount: (STATE.aiResult.tests || []).filter(t => t.status !== 'normal').length
+  });
+  update({});
+  showToast('Report QR saved to My Profile! 🔖');
+}
+
+// ============================================================
+//  GENERATOR
+// ============================================================
+function generateCompanyQR() {
+  const f = STATE.genForm;
+  if (!f.company || !f.patient) { showToast('Hospital/Company and Patient name required', 'err'); return; }
+  STATE.genQRs.unshift({
+    id: rid(),
+    company: f.company, patient: f.patient, reportType: f.reportType,
+    notes: f.notes, contact: f.contact, doctorName: f.doctorName,
+    date: new Date().toISOString().slice(0,10),
+    abnormal: Math.floor(Math.random()*5),
+    totalTests: Math.floor(Math.random()*12)+6,
+    riskLevel: ['low','medium','high'][Math.floor(Math.random()*3)]
+  });
+  update({genForm:{company:'',patient:'',reportType:'CBC',notes:'',contact:'',doctorName:''}});
+  showToast('QR Code generated and added to library! 📊');
+}
+
+// ============================================================
+//  APPOINTMENTS
+// ============================================================
+function addAppointment() {
+  const a = STATE.newAppt;
+  if (!a.doc || !a.dept || !a.date || !a.time) {
+    showToast('Please fill all appointment fields', 'err'); return;
+  }
+  STATE.appointments.unshift({
+    id: rid(), doc:a.doc, dept:a.dept, date:a.date, time:a.time,
+    type:a.type, status:'upcoming'
+  });
+  update({showApptForm:false, newAppt:{doc:'',dept:'',date:'',time:'',type:'Consultation'}});
+  showToast('Appointment booked! 📅');
+}
+
+// ============================================================
+//  DRAW ANALYTICS CHARTS
+// ============================================================
+function drawAnalyticsCharts() {
+  const ctx = document.getElementById('healthChart');
+  if (!ctx) return;
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  const months = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+  const hb = [12.1,11.8,11.5,11.2,11.4,11.7];
+  const chol = [230,225,220,218,215,210];
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {label:'Hemoglobin (g/dL)',data:hb,borderColor:'#0d9488',backgroundColor:'rgba(13,148,136,.1)',tension:.4,fill:true,pointBackgroundColor:'#0d9488',pointRadius:5},
+        {label:'Cholesterol (mg/dL ÷10)',data:chol.map(v=>v/10),borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',tension:.4,fill:true,pointBackgroundColor:'#f59e0b',pointRadius:5}
+      ]
+    },
+    options: {
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:11}}}},
+      scales:{y:{grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false}}}
+    }
+  });
+}
+
+// ============================================================
+//  RENDER FUNCTIONS
+// ============================================================
+
+// ── PROFILE TAB ──
+function renderProfile() {
+  const p = STATE.pf, u = STATE.user;
+  const qrData = 'https://medsecure.health/u/' + u.id;
+  return `
+<div class="profileGrid">
+  <div>
+    <!-- Personal Info Card -->
+    <div class="card">
+      <div class="cardH">
+        <div class="cardIco">👤</div>
+        <div><div class="cardTitle">Personal Information</div><div class="cardSub">Basic details about you</div></div>
+      </div>
+      <div class="cardBody">
+        <div class="g2">
+          <div class="fgrp">
+            <label class="label">Full Name *</label>
+            <input class="inp" placeholder="Your full name" value="${p.name}" oninput="STATE.pf.name=this.value"/>
+          </div>
+          <div class="fgrp">
+            <label class="label">Date of Birth</label>
+            <input class="inp" type="date" value="${p.dob}" oninput="STATE.pf.dob=this.value"/>
+          </div>
+          <div class="fgrp">
+            <label class="label">Gender</label>
+            <select class="sel" onchange="STATE.pf.gender=this.value">
+              ${['Male','Female','Other'].map(g=>`<option ${p.gender===g?'selected':''}>${g}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fgrp">
+            <label class="label">Age</label>
+            <input class="inp" type="number" min="1" max="120" placeholder="25" value="${p.age}" oninput="STATE.pf.age=this.value"/>
+          </div>
+          <div class="fgrp">
+            <label class="label">Blood Group</label>
+            <select class="sel" onchange="STATE.pf.bloodGroup=this.value">
+              ${BLOOD.map(b=>`<option ${p.bloodGroup===b?'selected':''}>${b}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fgrp">
+            <label class="label">Phone Number</label>
+            <input class="inp" placeholder="+91 XXXXX XXXXX" value="${p.phone}" oninput="STATE.pf.phone=this.value"/>
+          </div>
+          <div class="fgrp">
+            <label class="label">Weight</label>
+            <input class="inp" placeholder="e.g. 70kg" value="${p.weight}" oninput="STATE.pf.weight=this.value"/>
+          </div>
+          <div class="fgrp">
+            <label class="label">Height</label>
+            <input class="inp" placeholder="e.g. 175cm" value="${p.height}" oninput="STATE.pf.height=this.value"/>
+          </div>
+        </div>
+        <div class="fgrp">
+          <label class="label">Emergency Contact</label>
+          <input class="inp" placeholder="+91 XXXXX XXXXX (friend/family)" value="${p.emergencyContact}" oninput="STATE.pf.emergencyContact=this.value"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medical Details Card -->
+    <div class="card">
+      <div class="cardH">
+        <div class="cardIco">❤️</div>
+        <div><div class="cardTitle">Medical Details</div><div class="cardSub">Health conditions, allergies, and medications</div></div>
+      </div>
+      <div class="cardBody">
+        <div class="fgrp">
+          <label class="label">⚠️ Medical Conditions</label>
+          <textarea class="ta" rows="2" placeholder="e.g. Diabetes Type 2, Hypertension, Asthma..." oninput="STATE.pf.conditions=this.value">${p.conditions}</textarea>
+        </div>
+        <div class="fgrp">
+          <label class="label">⚠️ Allergies</label>
+          <textarea class="ta" rows="2" placeholder="e.g. Penicillin, Peanuts, Latex, Aspirin..." oninput="STATE.pf.allergies=this.value">${p.allergies}</textarea>
+        </div>
+        <div class="fgrp">
+          <label class="label">💊 Current Medications</label>
+          <textarea class="ta" rows="2" placeholder="e.g. Metformin 500mg twice daily, Lisinopril 10mg..." oninput="STATE.pf.medications=this.value">${p.medications}</textarea>
+        </div>
+        <div class="fgrp">
+          <label class="label">📝 Additional Notes</label>
+          <textarea class="ta" rows="2" placeholder="Any other relevant medical information, past surgeries..." oninput="STATE.pf.notes=this.value">${p.notes}</textarea>
+        </div>
+        <div class="divider"></div>
+        <button class="btn bGr" style="width:100%;justify-content:center" onclick="doSave()">
+          ✓ Save Medical Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- Reports -->
+    ${STATE.reports.length ? `
+    <div class="card">
+      <div class="cardH">
+        <div class="cardIco">📊</div>
+        <div><div class="cardTitle">My Report QR Codes (${STATE.reports.length})</div><div class="cardSub">Generated from AI analysis</div></div>
+      </div>
+      <div class="cardBody">
+        ${STATE.reports.map(r => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd);gap:10px">
+          <div>
+            <div style="font-weight:600;font-size:13px;color:var(--navy)">${r.patientName}</div>
+            <div style="font-size:11px;color:var(--mu)">${r.type} · ${r.date} · ${r.testCount || 0} tests · ${r.abnormalCount || 0} abnormal</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+            <span class="riskBadge ${r.riskLevel==='high'||r.riskLevel==='critical'?'rHigh':r.riskLevel==='medium'?'rMed':'rLow'}">${r.riskLevel}</span>
+            <img src="${qrSrc('medsecure://report/'+r.id,36)}" width="36" height="36" style="border-radius:5px;border:1px solid var(--tb)" alt="QR"/>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+  </div>
+
+  <!-- Right Column: QR + Summary -->
+  <div>
+    <div class="qrPanel">
+      <div style="font-family:var(--fh);font-size:14px;font-weight:800;color:var(--navy);margin-bottom:2px">🔲 Your QR Code</div>
+      <div style="font-size:11px;color:var(--mu);margin-bottom:4px">Scan → instant health profile (Server 2)</div>
+      <div class="qrRing">
+        <img src="${qrSrc(qrData)}" width="165" height="165" style="border-radius:8px;display:block" alt="Your QR Code"/>
+      </div>
+      <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:8px;padding:8px 11px;margin-bottom:11px">
+        <div style="font-size:9px;font-weight:700;color:var(--td);margin-bottom:1px">🔗 PUBLIC URL</div>
+        <div style="font-size:10px;color:var(--mu);word-break:break-all">medsecure.health/u/${u.id.slice(-10)}</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
+        <button class="btn bOu bSm" onclick="update({pubId:'${u.id}',page:'pub'})">👁 Preview</button>
+        <button class="btn bGr bSm" onclick="window.open('${qrSrc(qrData,400)}','_blank')">⬇ Download</button>
+        <button class="btn bAm bSm" onclick="update({tab:'idcard'});renderTab()">🪪 ID Card</button>
+      </div>
+      <div style="border-top:1px solid var(--bd);padding-top:12px">
+        <div style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">PROFILE SUMMARY</div>
+        ${[
+          ['Blood Group', p.bloodGroup || '—'],
+          ['Age', p.age ? p.age + ' years' : '—'],
+          ['Gender', p.gender || '—'],
+          ['Emergency', p.emergencyContact ? '✓ Saved' : '—'],
+          ['Conditions', p.conditions ? '✓ ' + p.conditions.split(',').length + ' listed' : '—'],
+          ['Allergies', p.allergies ? '✓ ' + p.allergies.split(',').length + ' listed' : '—'],
+          ['Medications', p.medications ? '✓ Added' : '—'],
+        ].map(([l,v]) => `
+        <div class="qrSummRow">
+          <span style="color:var(--mu)">${l}</span>
+          <span style="font-weight:700;font-family:var(--fh);font-size:10.5px;color:${v.startsWith('✓')?'var(--td)':'var(--mu)'}">${v}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── SCANNER TAB ──
+function renderScanner() {
+  const sr = STATE.scanResult;
+  return `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">📷</div>
+    <div><div class="cardTitle">QR Code Scanner</div><div class="cardSub">Upload any MedSecure QR image → jsQR decodes → loads full patient data</div></div>
+  </div>
+  <div class="cardBody">
+    <label style="display:block;cursor:pointer;margin-bottom:14px">
+      <div class="dropZone">
+        <div style="font-size:48px;margin-bottom:12px">📷</div>
+        <div style="font-family:var(--fh);font-size:16px;font-weight:700;color:var(--td);margin-bottom:6px">Upload QR Code Image</div>
+        <div style="font-size:13px;color:var(--mu);margin-bottom:16px">Supports PNG, JPG, WebP — any MedSecure-generated QR</div>
+        <span class="btn bGr bSm" style="pointer-events:none">📂 Choose Image File</span>
+      </div>
+      <input type="file" accept="image/*" style="display:none" onchange="handleQRUpload(this)"/>
+    </label>
+
+    ${sr ? `
+    <div class="scanResult">
+      ${sr.error ? `
+        <div style="text-align:center;padding:20px">
+          <div style="font-size:36px;margin-bottom:10px">❌</div>
+          <div style="font-family:var(--fh);font-size:15px;font-weight:700;color:var(--red);margin-bottom:6px">${sr.error}</div>
+          <div style="font-size:12px;color:var(--mu)">Tips: Ensure the QR code is clearly visible, well-lit, and not blurry</div>
+        </div>
+      ` : `
+        <div style="background:var(--gbg);border:1px solid var(--grb);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:24px">✅</span>
+          <div>
+            <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--grn)">QR Code Decoded Successfully!</div>
+            <div style="font-size:11px;color:var(--mu);margin-top:2px;word-break:break-all">${sr.decoded}</div>
+          </div>
+        </div>
+        ${sr.matched ? `
+        <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:12px;padding:16px;margin-bottom:14px">
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--td);margin-bottom:13px">👤 Patient Found in System!</div>
+          <div class="g2" style="margin-bottom:13px;font-size:12px">
+            ${[['Full Name',sr.matched.name],['Blood Group',sr.matched.bloodGroup||'—'],['Age',sr.matched.age||'—'],['Gender',sr.matched.gender||'—'],['Emergency',sr.matched.emergencyContact||'—'],['Conditions',sr.matched.conditions||'None listed']].map(([l,v])=>`
+            <div>
+              <div style="font-size:9px;font-weight:700;color:var(--mu);margin-bottom:3px;text-transform:uppercase">${l}</div>
+              <div style="font-weight:600;color:var(--navy);font-size:12px">${v}</div>
+            </div>`).join('')}
+          </div>
+          ${sr.matched.allergies ? `<div style="background:var(--rbg);border:1px solid var(--rb);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px"><strong style="color:var(--red)">⚠️ ALLERGIES:</strong> <span style="color:var(--tx)">${sr.matched.allergies}</span></div>` : ''}
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <button class="btn bGr bSm" onclick="update({pubId:'${sr.matched.id}',page:'pub'})">👁 View Full Profile</button>
+            <button class="btn bOu bSm" onclick="update({tab:'profile'});renderTab()">← Go to My Profile</button>
+          </div>
+        </div>` : `
+        <div style="background:var(--abg);border:1px solid var(--abb);border-radius:10px;padding:13px 15px">
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--amb);margin-bottom:4px">⚠️ Patient Not Found Locally</div>
+          <div style="font-size:12px;color:var(--mu);line-height:1.6">The QR code was decoded but no matching patient was found in the local database. The QR may be from another device or system.<br><strong>Decoded data:</strong> ${sr.decoded}</div>
+        </div>`}
+      `}
+    </div>` : ''}
+
+    <div style="margin-top:18px;padding:16px;background:var(--bg);border-radius:11px;border:1px solid var(--bd)">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">💡 How QR Scanning Works</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${[
+          ['📱','Generate QR','Go to My Profile and your unique QR is auto-generated'],
+          ['📷','Upload Image','Upload any QR code image (photo, screenshot, printout)'],
+          ['🔍','Auto Decode','jsQR library reads the QR and extracts patient data'],
+          ['📋','View Data','Patient allergies, conditions, emergency contact load instantly'],
+        ].map(([e,t,d])=>`
+        <div style="display:flex;gap:9px;align-items:flex-start">
+          <span style="font-size:20px;flex-shrink:0">${e}</span>
+          <div><div style="font-family:var(--fh);font-size:12px;font-weight:700;color:var(--navy);margin-bottom:2px">${t}</div><div style="font-size:11px;color:var(--mu);line-height:1.5">${d}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── ANALYZER TAB ──
+function renderAnalyzer() {
+  const {aiResult, analyzing, aiTab} = STATE;
+  const tabs = [['table','📋 Test Results'],['chart','📊 Chart'],['advice','💊 Advice'],['diagnosis','🔬 Diagnosis'],['diet','🥗 Diet'],['followup','🔄 Follow-up']];
+  return `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco" style="background:linear-gradient(135deg,var(--pbg),var(--prb));font-size:18px">🧬</div>
+    <div>
+      <div class="cardTitle">AI Lab Report Analyzer</div>
+      <div class="cardSub">Paste any lab report → Claude AI analyzes every ratio, flags abnormals, gives full clinical assessment</div>
+    </div>
+  </div>
+  <div class="cardBody">
+    <div class="fgrp">
+      <label class="label">📋 Lab Report Text (paste full report)</label>
+      <textarea class="ta" id="reportInput" rows="8" placeholder="Paste your complete lab report here (CBC, LFT, RFT, Lipid Panel, HbA1c, Thyroid, Urine Analysis...)">${aiResult ? '' : SAMPLE_REPORT}</textarea>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+      <button class="btn bPu" style="flex:1;justify-content:center;min-width:160px" onclick="runAnalysis()" ${analyzing?'disabled':''}>
+        ${analyzing ? '<span class="spinner"></span> Analyzing with AI...' : '🧬 Analyze with Claude AI'}
+      </button>
+      ${aiResult ? `<button class="btn bAm bSm" onclick="saveReportQR()">🔲 Save Report QR</button>` : ''}
+      <button class="btn bOu bSm" onclick="document.getElementById('reportInput').value=SAMPLE_REPORT">📋 Load Sample</button>
+    </div>
+
+    ${aiResult ? `
+    <!-- Risk Summary Bar -->
+    <div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid var(--bd)">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px">
+        <span class="riskBadge ${aiResult.riskLevel==='critical'?'rCrit':aiResult.riskLevel==='high'?'rHigh':aiResult.riskLevel==='medium'?'rMed':'rLow'}">
+          ${{critical:'🔴 CRITICAL',high:'🟠 HIGH RISK',medium:'🟡 MEDIUM RISK',low:'🟢 LOW RISK'}[aiResult.riskLevel] || '🟢 LOW RISK'}
+        </span>
+        ${aiResult.patientName?`<span style="font-size:12px;color:var(--mu)">Patient: <strong>${aiResult.patientName}</strong></span>`:''}
+        ${aiResult.testDate?`<span style="font-size:12px;color:var(--mu)">Date: <strong>${aiResult.testDate}</strong></span>`:''}
+        <span style="font-size:12px;color:var(--mu)">
+          Tests: <strong>${(aiResult.tests||[]).length}</strong> &nbsp;|&nbsp;
+          Abnormal: <strong style="color:${(aiResult.tests||[]).filter(t=>t.status!=='normal').length>0?'var(--red)':'var(--grn)'}">${(aiResult.tests||[]).filter(t=>t.status!=='normal').length}</strong>
+        </span>
+      </div>
+      <div style="font-size:13px;color:var(--tx);line-height:1.65">⚕️ <strong>Summary:</strong> ${aiResult.summary||''}</div>
+      ${(aiResult.urgentFindings||[]).length ? `
+      <div style="margin-top:10px;padding:10px 12px;background:var(--rbg);border:1px solid var(--rb);border-radius:8px">
+        <div style="font-family:var(--fh);font-size:11px;font-weight:700;color:var(--red);margin-bottom:5px">🚨 URGENT FINDINGS</div>
+        ${(aiResult.urgentFindings||[]).map(f=>`<div style="font-size:12px;color:var(--red);margin-bottom:2px">• ${f}</div>`).join('')}
+      </div>` : ''}
+    </div>
+
+    <!-- Tabs -->
+    <div class="aiTabs">
+      ${tabs.map(([id,lbl])=>`<button class="aiTab ${aiTab===id?'active':''}" onclick="update({aiTab:'${id}'});${id==='chart'?'setTimeout(drawAIChart,100)':''}">${lbl}</button>`).join('')}
+    </div>
+
+    <!-- Tab: Table -->
+    ${aiTab==='table' ? `
+    <div style="overflow-x:auto">
+      <div style="min-width:550px">
+        <div style="display:grid;grid-template-columns:1.2fr 90px 140px 75px;gap:6px;padding:6px 0;font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--bd);margin-bottom:5px">
+          <span>Test Name</span><span style="text-align:right">Your Value</span><span>Normal Range</span><span style="text-align:center">Status</span>
+        </div>
+        ${(aiResult.tests||[]).map(t=>`
+        <div class="testRow">
+          <div style="flex:1.2">
+            <div style="font-size:12.5px;font-weight:600;color:var(--navy)">${t.name}</div>
+            <div style="font-size:10px;color:var(--mu);margin-top:2px;line-height:1.5">${t.interpretation||''}</div>
+          </div>
+          <div style="min-width:90px;text-align:right;font-family:var(--fh);font-size:13px;font-weight:800;color:${t.status==='critical'?'var(--pur)':t.status==='high'?'var(--red)':t.status==='low'?'var(--amb)':'var(--grn)'}">
+            ${t.value}<small style="font-size:9px;font-weight:400;margin-left:2px">${t.unit||''}</small>
+          </div>
+          <div style="min-width:140px;font-size:11px;color:var(--mu)">${t.normalRange||'—'}</div>
+          <div style="text-align:center">
+            <span style="padding:3px 9px;border-radius:100px;font-size:9px;font-weight:700;
+              background:${t.status==='critical'?'var(--pbg)':t.status==='high'?'var(--rbg)':t.status==='low'?'var(--abg)':'var(--gbg)'};
+              color:${t.status==='critical'?'var(--pur)':t.status==='high'?'var(--red)':t.status==='low'?'var(--amb)':'var(--grn)'}">
+              ${(t.status||'NORMAL').toUpperCase()}
+            </span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Tab: Chart -->
+    ${aiTab==='chart' ? `
+    <div class="analyticsChart"><canvas id="aiChartCanvas"></canvas></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:11px;font-size:11px">
+      ${[['#14b8a6','Normal'],['#f59e0b','Low'],['#ef4444','High'],['#7c3aed','Critical']].map(([c,l])=>`
+      <span style="display:flex;align-items:center;gap:5px">
+        <span style="width:10px;height:10px;border-radius:2px;background:${c};display:inline-block"></span>${l}
+      </span>`).join('')}
+    </div>` : ''}
+
+    <!-- Tab: Advice -->
+    ${aiTab==='advice' ? `
+    <div>
+      ${(aiResult.recommendations||[]).map((r,i)=>`
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:13px">
+        <div style="width:24px;height:24px;border-radius:7px;background:var(--tbg);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">${['💊','🩺','🏃','💧','😴','🧪','🥗','💉'][i%8]}</div>
+        <div style="line-height:1.65;color:var(--tx)">${r}</div>
+      </div>`).join('')}
+    </div>` : ''}
+
+    <!-- Tab: Diagnosis -->
+    ${aiTab==='diagnosis' ? `
+    <div>
+      ${(aiResult.diagnosisHints||[]).map(h=>`
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:13px">
+        <div style="width:24px;height:24px;border-radius:7px;background:var(--pbg);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">🔬</div>
+        <div style="line-height:1.65;color:var(--tx)">${h}</div>
+      </div>`).join('')}
+      <div style="background:var(--abg);border:1px solid var(--abb);border-radius:10px;padding:13px 15px;margin-top:14px;font-size:12px;color:#92400e;line-height:1.6">
+        ⚠️ <strong>Medical Disclaimer:</strong> This AI analysis is for informational purposes only. Always consult a qualified medical professional for diagnosis, treatment, and medication decisions.
+      </div>
+    </div>` : ''}
+
+    <!-- Tab: Diet -->
+    ${aiTab==='diet' ? `
+    <div>
+      ${(aiResult.dietaryAdvice||['Maintain a balanced diet rich in fruits and vegetables','Reduce processed foods and added sugars','Stay hydrated with 8-10 glasses of water daily','Limit red meat and saturated fats','Include omega-3 rich foods like fish and walnuts']).map((d,i)=>`
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:13px">
+        <div style="width:24px;height:24px;border-radius:7px;background:var(--gbg);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">${['🥗','🫐','💧','🐟','🌾','🍎','🥑'][i%7]}</div>
+        <div style="line-height:1.65;color:var(--tx)">${d}</div>
+      </div>`).join('')}
+    </div>` : ''}
+
+    <!-- Tab: Follow-up -->
+    ${aiTab==='followup' ? `
+    <div>
+      <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--td);margin-bottom:9px">🔄 Recommended Follow-up Tests</div>
+        ${(aiResult.followUpTests||['Repeat CBC in 4-6 weeks','Lipid profile after dietary changes','HbA1c in 3 months','Vitamin B12 and Folate levels']).map(t=>`
+        <div style="display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--tb);font-size:12px">
+          <span style="color:var(--td)">→</span><span style="color:var(--tx)">${t}</span>
+        </div>`).join('')}
+      </div>
+      <button class="btn bGr" style="width:100%;justify-content:center" onclick="update({tab:'appointments'});renderTab()">
+        📅 Book Appointment Now
+      </button>
+    </div>` : ''}
+    ` : `
+    <div style="text-align:center;padding:32px 16px">
+      <div style="font-size:52px;margin-bottom:13px">🧬</div>
+      <div style="font-family:var(--fh);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px">AI Analyzer Ready</div>
+      <div style="font-size:13px;color:var(--mu);line-height:1.7;max-width:360px;margin:0 auto">A sample CBC + Lipid Panel report is pre-loaded above.<br>Click <strong>Analyze with Claude AI</strong> to see the full breakdown with all tests, risk assessment, and recommendations.</div>
+    </div>`}
+  </div>
+</div>`;
+}
+
+// ── GENERATOR TAB ──
+function renderGenerator() {
+  const f = STATE.genForm;
+  const det = STATE.genQRs.find(q => q.id === STATE.qrDetailId);
+  return `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco" style="background:linear-gradient(135deg,var(--orbg),var(--orb));color:var(--or)">🏭</div>
+    <div>
+      <div class="cardTitle">Medical Company QR Generator</div>
+      <div class="cardSub">Generate unique QR codes for any medical report — build and manage your complete QR library</div>
+    </div>
+  </div>
+  <div class="cardBody">
+    <div class="g2">
+      <div class="fgrp">
+        <label class="label">🏥 Hospital / Company Name *</label>
+        <input class="inp" placeholder="e.g. AIIMS Patna, Apollo Hospital" value="${f.company}" oninput="STATE.genForm.company=this.value"/>
+      </div>
+      <div class="fgrp">
+        <label class="label">👤 Patient Full Name *</label>
+        <input class="inp" placeholder="e.g. Rahul Sharma" value="${f.patient}" oninput="STATE.genForm.patient=this.value"/>
+      </div>
+      <div class="fgrp">
+        <label class="label">🔬 Report Type</label>
+        <select class="sel" onchange="STATE.genForm.reportType=this.value">
+          ${REPORT_TYPES.map(t=>`<option ${f.reportType===t?'selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>
+      <div class="fgrp">
+        <label class="label">🩺 Doctor's Name</label>
+        <input class="inp" placeholder="e.g. Dr. Priya Sharma" value="${f.doctorName}" oninput="STATE.genForm.doctorName=this.value"/>
+      </div>
+      <div class="fgrp">
+        <label class="label">📞 Contact / Reference No.</label>
+        <input class="inp" placeholder="+91 XXXXX or Ref#123" value="${f.contact}" oninput="STATE.genForm.contact=this.value"/>
+      </div>
+    </div>
+    <div class="fgrp">
+      <label class="label">📝 Key Values / Report Notes</label>
+      <textarea class="ta" rows="3" placeholder="Paste key diagnostic values, doctor notes, findings..." oninput="STATE.genForm.notes=this.value">${f.notes}</textarea>
+    </div>
+    <button class="btn bOr" style="width:100%;justify-content:center;font-size:14px" onclick="generateCompanyQR()">
+      🔲 Generate QR Code for This Report
+    </button>
+  </div>
+</div>
+
+${STATE.genQRs.length ? `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">🗂️</div>
+    <div><div class="cardTitle">QR Code Library (${STATE.genQRs.length} generated)</div><div class="cardSub">Click any card to view full data and download</div></div>
+  </div>
+  <div class="cardBody">
+    <div class="qrGallery">
+      ${STATE.genQRs.map(q => `
+      <div class="qrGCard" onclick="update({qrDetailId:'${q.id}'})">
+        <div style="font-family:var(--fh);font-size:10px;font-weight:700;color:var(--td);margin-bottom:2px">${q.company}</div>
+        <div style="font-size:13px;color:var(--navy);font-weight:700;margin-bottom:10px">${q.patient}</div>
+        <img src="${qrSrc('medsecure://'+q.id+'/'+encodeURIComponent(q.patient)+'/'+q.reportType,110)}" width="110" height="110" style="border-radius:9px;border:1px solid var(--tb)" alt="QR"/>
+        <div style="display:inline-flex;background:var(--tbg);color:var(--td);font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;margin-top:8px">${q.reportType}</div>
+        <div style="font-size:9px;color:var(--mu);margin-top:4px">${q.date}</div>
+        <div style="margin-top:7px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap">
+          <span style="background:${q.abnormal>2?'var(--rbg)':'var(--gbg)'};color:${q.abnormal>2?'var(--red)':'var(--grn)'};font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px">${q.abnormal} Abnormal</span>
+          <span class="riskBadge ${q.riskLevel==='high'?'rHigh':q.riskLevel==='medium'?'rMed':'rLow'}" style="font-size:9px;padding:2px 8px">${q.riskLevel}</span>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>` : ''}
+
+${det ? `
+<div class="overlay" onclick="if(event.target===this)update({qrDetailId:null})">
+  <div class="modal" style="max-width:450px">
+    <button class="closeBtn" onclick="update({qrDetailId:null})">×</button>
+    <div class="modalT">${det.patient}</div>
+    <div class="modalS">${det.company} · ${det.reportType} · ${det.date}</div>
+    <div style="text-align:center;margin-bottom:18px">
+      <img src="${qrSrc('medsecure://'+det.id+'/'+encodeURIComponent(det.patient)+'/'+det.reportType,192)}" width="192" height="192" style="border-radius:14px;border:2px solid var(--tb)" alt="QR"/>
+    </div>
+    <div class="statsGrid" style="margin-bottom:14px">
+      <div class="statCard"><div class="statLabel">Total Tests</div><div class="statValue">~${det.totalTests}</div></div>
+      <div class="statCard"><div class="statLabel">Abnormal</div><div class="statValue" style="color:${det.abnormal>2?'var(--red)':'var(--grn)'}">${det.abnormal}</div></div>
+      <div class="statCard"><div class="statLabel">Risk Level</div><div class="statValue" style="font-size:14px;color:${det.riskLevel==='high'?'var(--red)':det.riskLevel==='medium'?'var(--amb)':'var(--grn)'}">${det.riskLevel.toUpperCase()}</div></div>
+    </div>
+    ${det.doctorName?`<div style="font-size:12px;color:var(--mu);margin-bottom:8px">🩺 Doctor: <strong>${det.doctorName}</strong></div>`:''}
+    ${det.contact?`<div style="font-size:12px;color:var(--mu);margin-bottom:10px">📞 Contact: <strong>${det.contact}</strong></div>`:''}
+    ${det.notes?`<div style="background:var(--tbg);border:1px solid var(--tb);border-radius:9px;padding:12px;font-size:12px;color:var(--td);line-height:1.65;margin-bottom:14px">📋 ${det.notes}</div>`:''}
+    <div style="display:flex;gap:9px">
+      <button class="btn bAm" style="flex:1;justify-content:center" onclick="window.open('${qrSrc('medsecure://'+det.id,400)}','_blank')">⬇ Download QR</button>
+      <button class="btn bOu bSm" onclick="update({qrDetailId:null})">Close</button>
+    </div>
+  </div>
+</div>` : ''}`;
+}
+
+// ── HUB TAB ──
+function renderHub() {
+  const sd = STATE.selDept, sm = STATE.selMed, sa = STATE.selActivity;
+  const sq = STATE.searchQuery.toLowerCase();
+  const filteredDepts = sq ? DEPARTMENTS.filter(d => d.n.toLowerCase().includes(sq) || d.s.toLowerCase().includes(sq)) : DEPARTMENTS;
+  const filteredMeds = sq ? MEDICINES.filter(m => m.n.toLowerCase().includes(sq) || m.u.toLowerCase().includes(sq)) : MEDICINES;
+  const filteredActs = sq ? ACTIVITIES.filter(a => a.n.toLowerCase().includes(sq) || a.dept.toLowerCase().includes(sq)) : ACTIVITIES;
+
+  return `
+<!-- Search Bar -->
+<div class="card" style="padding:16px 20px">
+  <div style="display:flex;gap:10px;align-items:center">
+    <span style="font-size:18px">🔍</span>
+    <input class="inp" style="flex:1" placeholder="Search departments, medicines, procedures..." oninput="STATE.searchQuery=this.value;renderTab()" value="${STATE.searchQuery}"/>
+    ${STATE.searchQuery?`<button class="btn bOu bSm" onclick="STATE.searchQuery='';renderTab()">✕ Clear</button>`:''}
+  </div>
+</div>
+
+<!-- Departments -->
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">🏥</div>
+    <div><div class="cardTitle">Hospital Departments (${filteredDepts.length})</div><div class="cardSub">Click any department to view QR code, floor details, and contact</div></div>
+  </div>
+  <div class="cardBody">
+    <div class="hubGrid">
+      ${filteredDepts.map((d,i) => `
+      <div class="hubCard" onclick="STATE.selDept=STATE.selDept&&STATE.selDept.id==='${d.id}'?null:DEPARTMENTS[${i}];renderTab()" style="background:${d.bg}">
+        <div class="hubIco" style="background:${d.ib}">${d.e}</div>
+        <div>
+          <div class="hubName">${d.n}</div>
+          <div class="hubSub">${d.s}</div>
+          <div class="hubLoc">📍 ${d.loc}</div>
+          <div class="tag">📞 ${d.c}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    ${sd ? `
+    <div class="expandBox">
+      <img src="${qrSrc('DEPT:'+sd.n+'|Floor:'+sd.loc+'|Contact:'+sd.c+'|Specialty:'+sd.s,148)}" width="148" height="148" style="border-radius:11px;border:2px solid var(--tb);flex-shrink:0" alt="QR"/>
+      <div style="flex:1;min-width:190px">
+        <div style="font-size:30px;margin-bottom:7px">${sd.e}</div>
+        <div style="font-family:var(--fh);font-size:19px;font-weight:800;color:var(--navy);margin-bottom:4px">${sd.n}</div>
+        <div style="font-size:13px;color:var(--mu);margin-bottom:12px;line-height:1.55">${sd.desc||sd.s}</div>
+        ${[['📍 Location',sd.loc],['📞 Contact',sd.c]].map(([l,v])=>`
+        <div style="font-size:12px;margin-bottom:5px;display:flex;gap:9px">
+          <span style="color:var(--mu);min-width:90px">${l}</span>
+          <strong style="color:var(--navy)">${v}</strong>
+        </div>`).join('')}
+        <div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn bGr bSm" onclick="window.open('${qrSrc('DEPT:'+sd.n+'|'+sd.loc+'|'+sd.c,400)}','_blank')">⬇ Download QR</button>
+          <button class="btn bOu bSm" onclick="STATE.selDept=null;renderTab()">✕ Close</button>
+        </div>
+      </div>
+    </div>` : ''}
+  </div>
+</div>
+
+<!-- Medicines -->
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">💊</div>
+    <div><div class="cardTitle">Medicine QR Codes (${filteredMeds.length})</div><div class="cardSub">Dosage, interactions, and instructions — scan for complete information</div></div>
+  </div>
+  <div class="cardBody">
+    <div class="hubGrid">
+      ${filteredMeds.map((m,i) => `
+      <div class="hubCard" onclick="STATE.selMed=STATE.selMed&&STATE.selMed.id==='${m.id}'?null:MEDICINES[${i}];renderTab()" style="background:${m.t==='Rx'?'var(--rbg)':'var(--gbg)'}">
+        <div class="hubIco" style="background:${m.t==='Rx'?'var(--rb)':'var(--grb)'}">💊</div>
+        <div>
+          <div class="hubName">${m.n}</div>
+          <div class="hubSub">${m.u}</div>
+          <div class="hubLoc">🕐 ${m.d}</div>
+          <span class="medTag" style="background:${m.t==='Rx'?'var(--rbg)':'var(--gbg)'};color:${m.t==='Rx'?'var(--red)':'var(--grn)'};border:1px solid ${m.t==='Rx'?'var(--rb)':'var(--grb)'}">${m.t==='Rx'?'💊 Prescription':'🟢 OTC'}</span>
+        </div>
+      </div>`).join('')}
+    </div>
+    ${sm ? `
+    <div class="expandBox">
+      <img src="${qrSrc('MEDICINE:'+sm.n+'|Dose:'+sm.d+'|Use:'+sm.u+'|SideEffects:'+sm.s+'|Category:'+sm.cat,148)}" width="148" height="148" style="border-radius:11px;border:2px solid var(--tb);flex-shrink:0" alt="QR"/>
+      <div style="flex:1;min-width:190px">
+        <span class="medTag" style="background:${sm.t==='Rx'?'var(--rbg)':'var(--gbg)'};color:${sm.t==='Rx'?'var(--red)':'var(--grn)'};border:1px solid ${sm.t==='Rx'?'var(--rb)':'var(--grb)'};margin-bottom:8px;display:inline-flex">${sm.t==='Rx'?'💊 Prescription Only':'🟢 Over The Counter'}</span>
+        <div style="font-family:var(--fh);font-size:17px;font-weight:800;color:var(--navy);margin-bottom:5px">${sm.n}</div>
+        ${[['Category',sm.cat],['Use For',sm.u],['Dosage',sm.d],['Side Effects',sm.s]].map(([l,v])=>`
+        <div style="font-size:12px;margin-bottom:5px;display:flex;gap:7px">
+          <span style="color:var(--mu);min-width:80px;flex-shrink:0">${l}</span>
+          <strong style="color:var(--navy)">${v}</strong>
+        </div>`).join('')}
+        <div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn bGr bSm" onclick="window.open('${qrSrc('MEDICINE:'+sm.n+'|'+sm.d,400)}','_blank')">⬇ Download QR</button>
+          <button class="btn bOu bSm" onclick="STATE.selMed=null;renderTab()">✕ Close</button>
+        </div>
+      </div>
+    </div>` : ''}
+  </div>
+</div>
+
+<!-- Activities -->
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">🏃</div>
+    <div><div class="cardTitle">Hospital Activities & Procedures (${filteredActs.length})</div><div class="cardSub">QR codes for every procedure — scan for prep instructions and department info</div></div>
+  </div>
+  <div class="cardBody">
+    <div class="hubGrid">
+      ${filteredActs.map((a,i) => `
+      <div class="hubCard" onclick="STATE.selActivity=STATE.selActivity&&STATE.selActivity.n==='${a.n}'?null:ACTIVITIES[${i}];renderTab()">
+        <div class="hubIco" style="background:var(--tbg)">${a.e}</div>
+        <div>
+          <div class="hubName">${a.n}</div>
+          <div class="hubSub">${a.d}</div>
+          <div class="hubLoc">⏱ ${a.t}</div>
+          <div class="tag">🏥 ${a.dept}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    ${sa ? `
+    <div class="expandBox">
+      <img src="${qrSrc('PROCEDURE:'+sa.n+'|Dept:'+sa.dept+'|Duration:'+sa.t+'|Prep:'+sa.prep,148)}" width="148" height="148" style="border-radius:11px;border:2px solid var(--tb);flex-shrink:0" alt="QR"/>
+      <div style="flex:1;min-width:190px">
+        <div style="font-size:28px;margin-bottom:7px">${sa.e}</div>
+        <div style="font-family:var(--fh);font-size:17px;font-weight:800;color:var(--navy);margin-bottom:4px">${sa.n}</div>
+        <div style="font-size:13px;color:var(--mu);margin-bottom:10px">${sa.d}</div>
+        ${[['Department',sa.dept],['Duration',sa.t],['Preparation',sa.prep]].map(([l,v])=>`
+        <div style="font-size:12px;margin-bottom:5px;display:flex;gap:9px">
+          <span style="color:var(--mu);min-width:90px">${l}</span>
+          <strong style="color:var(--navy)">${v}</strong>
+        </div>`).join('')}
+        <div style="display:flex;gap:9px;margin-top:14px">
+          <button class="btn bGr bSm" onclick="window.open('${qrSrc('PROC:'+sa.n+'|'+sa.dept,400)}','_blank')">⬇ Download QR</button>
+          <button class="btn bOu bSm" onclick="STATE.selActivity=null;renderTab()">✕ Close</button>
+        </div>
+      </div>
+    </div>` : ''}
+  </div>
+</div>`;
+}
+
+// ── ID CARD TAB ──
+function renderIDCard() {
+  const {user, pf} = STATE;
+  const qrData = 'https://medsecure.health/u/' + user.id;
+  return `
+<div style="max-width:640px;margin:0 auto">
+  <div class="card">
+    <div class="cardH">
+      <div class="cardIco">🪪</div>
+      <div><div class="cardTitle">Medical Identity Card</div><div class="cardSub">Official MedSecure patient ID — print or save as PDF for emergency use</div></div>
+    </div>
+    <div class="cardBody">
+      <!-- The Card -->
+      <div class="idCardWrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;position:relative">
+          <div style="display:flex;align-items:center;gap:13px">
+            <div class="idAvatar">${ini(pf.name||user.name)}</div>
+            <div>
+              <div style="font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.12em;font-family:var(--fh);margin-bottom:3px">MedSecure Pro · IIT Patna</div>
+              <div style="font-family:var(--fh);font-size:18px;font-weight:800;margin-bottom:2px">${pf.name||user.name||'Patient Name'}</div>
+              <div style="font-size:10px;opacity:.44;font-family:var(--fh)">ID: #MS-${user.id.slice(-8).toUpperCase()}</div>
+            </div>
+          </div>
+          <div class="idQRbox">
+            <img src="${qrSrc(qrData, 80)}" width="80" height="80" alt="QR" style="border-radius:6px;display:block"/>
+            <div style="font-size:7px;font-weight:700;color:var(--td);margin-top:3px;letter-spacing:.05em">SCAN FOR DATA</div>
+          </div>
+        </div>
+        <div class="idFields">
+          ${[
+            ['Blood Group', pf.bloodGroup||'—'],
+            ['Age', pf.age?pf.age+' yrs':'—'],
+            ['Gender', pf.gender||'—'],
+            ['Weight / Height', pf.weight&&pf.height?pf.weight+' / '+pf.height:'—'],
+            ['Allergies', (pf.allergies||'None known').split(',')[0].trim().slice(0,18)],
+            ['Emergency', (pf.emergencyContact||'Not set').slice(0,18)],
+          ].map(([l,v]) => `
+          <div class="idField">
+            <div class="idFieldLabel">${l}</div>
+            <div class="idFieldVal">${v}</div>
+          </div>`).join('')}
+        </div>
+        ${pf.conditions ? `
+        <div style="margin-top:13px;background:rgba(255,255,255,.07);border-radius:9px;padding:10px 12px;position:relative">
+          <span style="font-size:8px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px">Medical Conditions</span>
+          <span style="font-size:11px;opacity:.85">${pf.conditions.slice(0,65)}</span>
+        </div>` : ''}
+        <div class="idBar" style="margin-top:15px">
+          <div class="idBarFill" style="width:82%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:9px;opacity:.34">
+          <span>medsecure.health</span>
+          <span>Valid: ${new Date().getFullYear()}–${new Date().getFullYear()+1}</span>
+          <span>Emergency: Call 112</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:10px;margin-top:18px;justify-content:center;flex-wrap:wrap">
+        <button class="btn bGr bSm" onclick="window.print()">🖨️ Print / Save PDF</button>
+        <button class="btn bAm bSm" onclick="window.open('${qrSrc(qrData,400)}','_blank')">⬇ Download QR PNG</button>
+        <button class="btn bOu bSm" onclick="update({pubId:'${user.id}',page:'pub'})">👁 Preview Public Profile</button>
+        <button class="btn bPu bSm" onclick="update({tab:'analyzer'});renderTab()">🧬 Analyze Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Health Summary under ID card -->
+  <div class="card" style="padding:18px 20px">
+    <div style="font-family:var(--fh);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px">📊 Quick Health Overview</div>
+    <div class="statsGrid">
+      ${[
+        ['Reports', STATE.reports.length, 'var(--td)'],
+        ['QR Codes', STATE.genQRs.length + 1, 'var(--td)'],
+        ['Medications', pf.medications ? pf.medications.split(',').length : 0, '#7c3aed'],
+        ['Conditions', pf.conditions ? pf.conditions.split(',').length : 0, '#d97706'],
+        ['Appointments', STATE.appointments.filter(a=>a.status==='upcoming').length, '#2563eb'],
+        ['Allergies', pf.allergies ? pf.allergies.split(',').length : 0, 'var(--red)'],
+      ].map(([l,v,c]) => `
+      <div class="statCard">
+        <div class="statLabel">${l}</div>
+        <div class="statValue" style="color:${c}">${v}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`;
+}
+
+// ── ANALYTICS TAB ──
+function renderAnalytics() {
+  return `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">📈</div>
+    <div><div class="cardTitle">Health Analytics Dashboard</div><div class="cardSub">Track your health trends over time with AI-powered insights</div></div>
+  </div>
+  <div class="cardBody">
+    <div class="statsGrid" style="margin-bottom:20px">
+      ${[
+        ['Total Reports', STATE.reports.length || 3, '#0d9488'],
+        ['QR Codes Generated', STATE.genQRs.length + 1, '#7c3aed'],
+        ['Abnormal Values', STATE.aiResult ? (STATE.aiResult.tests||[]).filter(t=>t.status!=='normal').length : 4, '#dc2626'],
+        ['Risk Score', STATE.aiResult ? (STATE.aiResult.riskLevel==='high'?78:STATE.aiResult.riskLevel==='medium'?52:24) : 52, '#d97706'],
+        ['Upcoming Appts', STATE.appointments.filter(a=>a.status==='upcoming').length, '#2563eb'],
+        ['Active Meds', STATE.pf.medications ? STATE.pf.medications.split(',').length : 2, '#16a34a'],
+      ].map(([l,v,c]) => `
+      <div class="statCard">
+        <div class="statLabel">${l}</div>
+        <div class="statValue" style="color:${c}">${v}</div>
+      </div>`).join('')}
+    </div>
+
+    <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">📊 Health Trend — Last 6 Months</div>
+    <div class="analyticsChart" style="height:240px"><canvas id="healthChart"></canvas></div>
+
+    <div class="divider"></div>
+
+    <!-- Health Score -->
+    <div style="background:linear-gradient(135deg,var(--tbg),#fff);border:1px solid var(--tb);border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">🎯 Health Score Breakdown</div>
+      ${[
+        ['CBC (Blood Count)', 72, '#dc2626'],
+        ['Lipid Profile', 65, '#d97706'],
+        ['Blood Sugar', 88, '#16a34a'],
+        ['Liver Function', 92, '#16a34a'],
+        ['Kidney Function', 95, '#0d9488'],
+      ].map(([l,v,c]) => `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="color:var(--navy);font-weight:600">${l}</span>
+          <span style="font-family:var(--fh);font-weight:700;color:${c}">${v}/100</span>
+        </div>
+        <div style="height:6px;background:var(--bd);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${v}%;background:${c};border-radius:3px;transition:width .6s ease"></div>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <!-- AI Insights -->
+    <div style="background:var(--pbg);border:1px solid var(--prb);border-radius:12px;padding:16px">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--pur);margin-bottom:10px">🧠 AI Health Insights</div>
+      ${[
+        'Your hemoglobin has been consistently below normal — iron-deficiency anemia is suspected. Consider iron supplementation after consulting a doctor.',
+        'Cholesterol levels show a downward trend — keep up the dietary changes. LDL is still slightly elevated.',
+        'Blood sugar is in healthy range. Continue monitoring every 3 months given family history.',
+        'Uric acid appears elevated. Reduce purine-rich foods (red meat, shellfish, alcohol) and increase water intake.',
+      ].map(insight => `
+      <div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--prb);font-size:12px">
+        <span style="color:var(--pur);flex-shrink:0">→</span>
+        <span style="color:var(--tx);line-height:1.6">${insight}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`;
+}
+
+// ── APPOINTMENTS TAB ──
+function renderAppointments() {
+  const a = STATE.newAppt;
+  const upcoming = STATE.appointments.filter(x => x.status === 'upcoming');
+  const past = STATE.appointments.filter(x => x.status === 'completed');
+  return `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco">📅</div>
+    <div><div class="cardTitle">My Appointments</div><div class="cardSub">Book and manage your doctor appointments</div></div>
+  </div>
+  <div class="cardBody">
+    <button class="btn bGr" style="margin-bottom:16px" onclick="update({showApptForm:!STATE.showApptForm})">
+      ${STATE.showApptForm ? '✕ Cancel' : '+ Book New Appointment'}
+    </button>
+
+    ${STATE.showApptForm ? `
+    <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:13px;padding:18px;margin-bottom:18px;animation:fadeUp .3s ease">
+      <div style="font-family:var(--fh);font-size:14px;font-weight:700;color:var(--td);margin-bottom:14px">📅 New Appointment</div>
+      <div class="g2">
+        <div class="fgrp">
+          <label class="label">Doctor's Name *</label>
+          <input class="inp" placeholder="e.g. Dr. Priya Sharma" value="${a.doc}" oninput="STATE.newAppt.doc=this.value"/>
+        </div>
+        <div class="fgrp">
+          <label class="label">Department *</label>
+          <select class="sel" onchange="STATE.newAppt.dept=this.value">
+            <option value="">Select Department</option>
+            ${DEPARTMENTS.map(d=>`<option ${a.dept===d.n?'selected':''} value="${d.n}">${d.n}</option>`).join('')}
+          </select>
+        </div>
+        <div class="fgrp">
+          <label class="label">Date *</label>
+          <input class="inp" type="date" value="${a.date}" oninput="STATE.newAppt.date=this.value"/>
+        </div>
+        <div class="fgrp">
+          <label class="label">Time *</label>
+          <input class="inp" type="time" value="${a.time}" oninput="STATE.newAppt.time=this.value"/>
+        </div>
+        <div class="fgrp">
+          <label class="label">Appointment Type</label>
+          <select class="sel" onchange="STATE.newAppt.type=this.value">
+            ${['Consultation','Follow-up','Lab Test','Procedure','Emergency'].map(t=>`<option ${a.type===t?'selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <button class="btn bGr" onclick="addAppointment()">✓ Confirm Appointment</button>
+    </div>` : ''}
+
+    ${upcoming.length ? `
+    <div style="font-family:var(--fh);font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Upcoming (${upcoming.length})</div>
+    ${upcoming.map(ap => `
+    <div class="apptCard">
+      <div class="apptDate">
+        <div style="font-family:var(--fh);font-size:14px;font-weight:800;color:var(--td)">${new Date(ap.date).getDate()}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--t);text-transform:uppercase">${new Date(ap.date).toLocaleString('en',{month:'short'})}</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-family:var(--fh);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px">${ap.doc}</div>
+        <div style="font-size:12px;color:var(--mu)">${ap.dept} · ${ap.time} · ${ap.type}</div>
+      </div>
+      <span style="background:var(--tbg);color:var(--td);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid var(--tb);flex-shrink:0">Upcoming</span>
+    </div>`).join('')}` : '<div style="color:var(--mu);font-size:13px;padding:10px 0">No upcoming appointments. Book one above!</div>'}
+
+    ${past.length ? `
+    <div style="font-family:var(--fh);font-size:12px;font-weight:700;color:var(--navy);margin-top:18px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Past Appointments</div>
+    ${past.map(ap => `
+    <div class="apptCard" style="opacity:.65">
+      <div class="apptDate" style="background:var(--bg)">
+        <div style="font-family:var(--fh);font-size:14px;font-weight:800;color:var(--mu)">${new Date(ap.date).getDate()}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase">${new Date(ap.date).toLocaleString('en',{month:'short'})}</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px">${ap.doc}</div>
+        <div style="font-size:12px;color:var(--mu)">${ap.dept} · ${ap.time} · ${ap.type}</div>
+      </div>
+      <span style="background:var(--gbg);color:var(--grn);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid var(--grb);flex-shrink:0">✓ Done</span>
+    </div>`).join('')}` : ''}
+  </div>
+</div>`;
+}
+
+// ── DOCTOR VIEW TAB ──
+function renderDoctorView() {
+  const u = STATE.user, p = STATE.pf;
+  return `
+<div class="card">
+  <div class="cardH">
+    <div class="cardIco" style="background:linear-gradient(135deg,var(--rbg),#ffe4e6);color:var(--red)">🩺</div>
+    <div><div class="cardTitle">Doctor View — Patient Summary</div><div class="cardSub">Complete clinical summary as seen by a doctor after scanning patient QR</div></div>
+  </div>
+  <div class="cardBody">
+    <!-- Patient Header -->
+    <div style="background:linear-gradient(135deg,var(--navy),#1a3352);border-radius:12px;padding:18px;color:#fff;margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--tl),var(--t));display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:20px;font-weight:800;flex-shrink:0">${ini(p.name||u.name)}</div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-family:var(--fh);font-size:18px;font-weight:800;margin-bottom:2px">${p.name||u.name}</div>
+        <div style="font-size:12px;opacity:.6">${p.age?p.age+' yrs':'—'} · ${p.gender||'—'} · ${p.bloodGroup||'—'} · ID: #MS-${u.id.slice(-8).toUpperCase()}</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          ${p.bloodGroup?`<span style="background:rgba(239,68,68,.2);color:#fca5a5;font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px">🩸 ${p.bloodGroup}</span>`:''}
+          ${p.weight?`<span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px">⚖️ ${p.weight}</span>`:''}
+          ${p.height?`<span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px">📏 ${p.height}</span>`:''}
+        </div>
+      </div>
+      <div style="text-align:center">
+        <img src="${qrSrc('https://medsecure.health/u/'+u.id,70)}" width="70" height="70" style="border-radius:8px;border:2px solid rgba(255,255,255,.2);display:block;margin:0 auto 4px" alt="QR"/>
+        <div style="font-size:8px;opacity:.5">Patient QR</div>
+      </div>
+    </div>
+
+    <!-- Emergency Alert -->
+    ${p.emergencyContact ? `
+    <div style="background:var(--rbg);border:1.5px solid var(--rb);border-radius:11px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:center;gap:11px">
+      <span style="font-size:24px">🚨</span>
+      <div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:800;color:var(--red);margin-bottom:2px">EMERGENCY CONTACT</div>
+        <div style="font-size:15px;font-weight:700;color:var(--tx)">${p.emergencyContact}</div>
+      </div>
+    </div>` : ''}
+
+    <!-- Critical Allergies -->
+    ${p.allergies ? `
+    <div style="background:#fff3cd;border:1.5px solid #ffc107;border-radius:11px;padding:13px 15px;margin-bottom:14px;display:flex;gap:11px;align-items:flex-start">
+      <span style="font-size:22px;flex-shrink:0">⚠️</span>
+      <div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:800;color:#856404;margin-bottom:4px">KNOWN ALLERGIES — DO NOT PRESCRIBE</div>
+        <div style="font-size:13px;font-weight:600;color:#533f03">${p.allergies}</div>
+      </div>
+    </div>` : ''}
+
+    <!-- Clinical Grid -->
+    <div class="g2" style="margin-bottom:14px">
+      ${[
+        ['🏥 Medical Conditions', p.conditions || 'None reported', p.conditions?'var(--rbg)':'var(--gbg)'],
+        ['💊 Current Medications', p.medications || 'None reported', p.medications?'var(--pbg)':'var(--gbg)'],
+      ].map(([l,v,bg]) => `
+      <div style="background:${bg};border-radius:10px;padding:13px;border:1px solid var(--bd)">
+        <div style="font-family:var(--fh);font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">${l}</div>
+        <div style="font-size:12px;color:var(--tx);line-height:1.65">${v}</div>
+      </div>`).join('')}
+    </div>
+
+    ${p.notes ? `
+    <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:13px;margin-bottom:14px">
+      <div style="font-family:var(--fh);font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">📝 Additional Notes</div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.65">${p.notes}</div>
+    </div>` : ''}
+
+    <!-- Appointment History -->
+    ${STATE.appointments.length ? `
+    <div style="margin-top:4px">
+      <div style="font-family:var(--fh);font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px">📅 Appointment History</div>
+      <div class="medTimeline">
+        ${STATE.appointments.map(ap => `
+        <div class="timelineItem">
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy)">${ap.doc}</div>
+          <div style="font-size:11px;color:var(--mu)">${ap.dept} · ${ap.date} · ${ap.time}</div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:${ap.status==='upcoming'?'var(--tbg)':'var(--gbg)'};color:${ap.status==='upcoming'?'var(--td)':'var(--grn)'};border:1px solid ${ap.status==='upcoming'?'var(--tb)':'var(--grb)'}">${ap.status==='upcoming'?'Upcoming':'Completed'}</span>
+            <span style="font-size:10px;color:var(--mu)">${ap.type}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- AI Latest Report Summary -->
+    ${STATE.aiResult ? `
+    <div class="divider"></div>
+    <div style="background:var(--pbg);border:1px solid var(--prb);border-radius:12px;padding:15px">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--pur);margin-bottom:9px">🧬 Latest AI Lab Analysis</div>
+      <div style="display:flex;gap:9px;margin-bottom:9px;flex-wrap:wrap">
+        <span class="riskBadge ${STATE.aiResult.riskLevel==='high'?'rHigh':STATE.aiResult.riskLevel==='medium'?'rMed':'rLow'}">Risk: ${STATE.aiResult.riskLevel?.toUpperCase()}</span>
+        <span style="font-size:12px;color:var(--mu)">${(STATE.aiResult.tests||[]).length} tests · ${(STATE.aiResult.tests||[]).filter(t=>t.status!=='normal').length} abnormal</span>
+      </div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.65">${STATE.aiResult.summary}</div>
+    </div>` : ''}
+  </div>
+</div>`;
+}
+
+// ============================================================
+//  SIDEBAR TABS CONFIG
+// ============================================================
+const SIDEBAR_TABS = [
+  {id:'profile', icon:'👤', label:'My Profile', group:'Profile'},
+  {id:'scanner', icon:'📷', label:'QR Scanner', group:'Tools'},
+  {id:'analyzer',icon:'🧬', label:'AI Analyzer', group:'Tools'},
+  {id:'generator',icon:'🏭',label:'QR Generator',group:'Tools'},
+  {id:'hub',     icon:'🏥', label:'Hospital Hub', group:'Explore'},
+  {id:'appointments',icon:'📅',label:'Appointments',group:'Explore'},
+  {id:'analytics',icon:'📈',label:'Analytics', group:'Explore'},
+  {id:'idcard',  icon:'🪪', label:'ID Card', group:'Profile'},
+  {id:'doctor',  icon:'🩺', label:'Doctor View', group:'Explore'},
+];
+
+const PAGE_TITLES = {
+  profile:'👤 My Profile', scanner:'📷 QR Scanner', analyzer:'🧬 AI Lab Analyzer',
+  generator:'🏭 QR Generator', hub:'🏥 Hospital Hub', idcard:'🪪 Medical ID Card',
+  analytics:'📈 Health Analytics', appointments:'📅 Appointments', doctor:'🩺 Doctor View'
+};
+
+// ============================================================
+//  MAIN RENDER
+// ============================================================
+function render() {
+  const {page, showAuth, authMode, user, toastData, af} = STATE;
+  let html = '';
+
+  // Toast
+  if (toastData) {
+    html += `<div class="toast ${toastData.type==='ok'?'tOk':toastData.type==='err'?'tErr':'tInfo'}">${toastData.type==='ok'?'✓':toastData.type==='err'?'✕':'ℹ'} ${toastData.msg}</div>`;
+  }
+
+  // Auth Modal
+  if (showAuth) {
+    html += `
+<div class="overlay" onclick="if(event.target===this)update({showAuth:false})">
+  <div class="modal">
+    <button class="closeBtn" onclick="update({showAuth:false})">×</button>
+    <div class="modalT">${authMode==='login'?'Welcome back':'Create account'}</div>
+    <div class="modalS">${authMode==='login'?'Sign in to your MedSecure Pro account':'Join MedSecure Pro — your health, secured and smart.'}</div>
+    ${authMode==='login'?`<div class="demoHint">🧪 <strong>Demo credentials:</strong> arjun@demo.com &nbsp;/&nbsp; demo123</div>`:''}
+    ${authMode==='signup'?`
+    <div class="fgrp">
+      <label class="label">Full Name *</label>
+      <input class="inp" placeholder="Arjun Kumar" value="${af.name}" oninput="STATE.af.name=this.value"/>
+    </div>` : ''}
+    <div class="fgrp">
+      <label class="label">Email Address *</label>
+      <input class="inp" type="email" placeholder="you@email.com" value="${af.email}"
+        oninput="STATE.af.email=this.value" onkeydown="if(event.key==='Enter')doAuth()"/>
+    </div>
+    <div class="fgrp">
+      <label class="label">Password *</label>
+      <input class="inp" type="password" placeholder="Minimum 6 characters" value="${af.password}"
+        oninput="STATE.af.password=this.value" onkeydown="if(event.key==='Enter')doAuth()"/>
+    </div>
+    <button class="btn bGr" style="width:100%;justify-content:center;margin-top:4px" onclick="doAuth()">
+      ${authMode==='login'?'Sign In →':'Create My Account →'}
+    </button>
+    <div class="switchRow">
+      ${authMode==='login'?'Don\'t have an account? ':'Already have an account? '}
+      <span class="switchLink" onclick="update({authMode:'${authMode==='login'?'signup':'login'}'})">${authMode==='login'?'Sign up free':'Sign in'}</span>
+    </div>
+  </div>
+</div>`;
+  }
+
+  // ── LANDING PAGE ──
+  if (page === 'land') {
+    html += `
+<nav class="topNav">
+  <a class="brandLogo" onclick="return false">
+    <div class="brandBox"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <span class="brandName">MedSecure Pro</span>
+  </a>
+  <div class="navLinks">
+    <button class="navLink">Features</button>
+    <button class="navLink">How It Works</button>
+    <button class="navLink">Tech Stack</button>
+    <button class="navLink">Security</button>
+  </div>
+  <div style="display:flex;gap:9px">
+    <button class="btn bOu bSm" onclick="update({showAuth:true,authMode:'login'})">Sign In</button>
+    <button class="btn bGr bSm" onclick="update({showAuth:true,authMode:'signup'})">Get Started Free</button>
+  </div>
+</nav>
+
+<section class="heroSection">
+  <div class="heroBadge a1"><span class="heroDot"></span> AI-Powered Medical QR Platform · IIT Patna Capstone</div>
+  <h1 class="heroH a2">Your Complete Health Data<br/><em>Secured in One QR Code</em></h1>
+  <p class="heroP a3">AI lab analysis · QR scanning · Hospital hub · Medical ID cards · Analytics — the full-stack capstone your CS & Data Analytics degree deserves.</p>
+  <div class="ctaRow a4">
+    <button class="btn bGr bLg" onclick="update({showAuth:true,authMode:'signup'})">🔲 Get Your Free QR Code</button>
+    <button class="btn bOu bLg" onclick="update({showAuth:true,authMode:'login'})">Sign In →</button>
+  </div>
+
+  <!-- Hero Demo Card -->
+  <div class="demoWrap a5">
+    <div class="demoCard">
+      <div class="demoCardTop">
+        <div class="demoAv">AK</div>
+        <div>
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--navy)">Arjun Kumar</div>
+          <div style="font-size:11px;color:var(--mu)">ID: #MS-2026-001 · AIIMS Patna</div>
+        </div>
+      </div>
+      <div class="demoRow"><span class="dL">Blood Group</span><span class="dV">B+</span></div>
+      <div class="demoRow"><span class="dL">AI Risk Level</span><span class="dV" style="color:var(--amb)">Medium ⚠️</span></div>
+      <div class="demoRow"><span class="dL">Conditions</span><span class="dV">Mild Asthma</span></div>
+      <div class="demoRow"><span class="dL">Allergies</span><span class="dV">Penicillin ⛔</span></div>
+      <div class="demoRow"><span class="dL">Last Analyzed</span><span class="dV" style="color:var(--grn)">Today ✓</span></div>
+    </div>
+    <div class="qrBubble aFl">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=74x74&data=medsecure-pro-demo-2026&color=0f766e&bgcolor=f0fdfa&qzone=1" width="74" height="74" style="border-radius:6px" alt="QR"/>
+      <span class="qrBubbleLabel">Scan me</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div style="background:#fff;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:20px 24px">
+  <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;text-align:center">
+    ${[['10,000+','Patients Protected'],['99.9%','QR Scan Accuracy'],['6','Powerful Features'],['< 2s','AI Analysis Speed']].map(([v,l])=>`
+    <div><div style="font-family:var(--fh);font-size:24px;font-weight:800;color:var(--td);margin-bottom:3px">${v}</div><div style="font-size:12px;color:var(--mu)">${l}</div></div>`).join('')}
+  </div>
+</div>
+
+<!-- Features -->
+<section class="sectionWrap">
+  <h2 class="sTitle">9 Powerful <span style="color:var(--t)">Features</span></h2>
+  <p class="sSub">A complete full-stack medical platform — everything working, everything connected</p>
+  <div class="featGrid">
+    ${[
+      ['👤','Patient Profile + QR','Complete medical profile with auto-generated unique QR code linking to public health page.'],
+      ['📷','QR Code Scanner','Upload any QR image — jsQR library decodes and loads patient data instantly with allergy alerts.'],
+      ['🧬','Claude AI Analyzer','Paste any lab report — AI analyzes every ratio, flags abnormals, gives diagnosis hints and diet advice.'],
+      ['🏭','Medical QR Generator','Hospital portal to generate QR codes for any report type and build a searchable QR library.'],
+      ['🏥','Hospital Hub','12 departments, 8 medicines, 8 procedures — all with unique scannable QR codes and full details.'],
+      ['🪪','Medical ID Card','Printable patient identity card with embedded QR, health summary, and validity — PDF ready.'],
+      ['📅','Appointments','Book and manage doctor appointments with department selection and timeline view.'],
+      ['📈','Health Analytics','Track health trends over 6 months with AI-powered insights and health score breakdown.'],
+      ['🩺','Doctor View','Complete clinical summary as seen by a doctor — allergies, meds, conditions, QR scan result.'],
+    ].map(([e,t,d])=>`
+    <div class="featCard">
+      <div class="featIco">${e}</div>
+      <div class="featTitle">${t}</div>
+      <div class="featDesc">${d}</div>
+    </div>`).join('')}
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="darkSec">
+  <h2 style="font-family:var(--fh);font-size:clamp(24px,3.5vw,40px);font-weight:800;text-align:center;color:#fff;margin-bottom:8px">How It <span style="color:var(--tl)">Works</span></h2>
+  <p style="text-align:center;color:rgba(255,255,255,.5);font-size:14px;margin-bottom:40px">Four simple steps from signup to emergency-ready</p>
+  <div class="stepsGrid">
+    ${[
+      ['01','Sign Up','Create your free account in seconds.'],
+      ['02','Fill Profile','Add blood group, allergies, conditions, and medications.'],
+      ['03','Analyze Reports','Paste any lab report — AI gives instant full analysis.'],
+      ['04','Share Your QR','Show your QR at any hospital. Instant complete access.'],
+    ].map(([n,t,d])=>`
+    <div class="step">
+      <div class="stepNum">${n}</div>
+      <div style="font-family:var(--fh);font-size:15px;font-weight:700;color:#fff;margin-bottom:6px">${t}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.52);line-height:1.6">${d}</div>
+    </div>`).join('')}
+  </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="sectionWrap">
+  <h2 class="sTitle">Full <span style="color:var(--t)">Microservice Architecture</span></h2>
+  <p class="sSub">Production-grade tech stack — IIT Patna CS & Data Analytics capstone</p>
+  <div class="techGrid" style="max-width:1100px">
+    ${[
+      ['⚛️','React Frontend','SPA with state management, routing, and smooth animations — zero build tools, pure JS.'],
+      ['🟢','Node.js + Express','RESTful microservice API (Server 2) handling authenticated dashboard requests.'],
+      ['🍃','MongoDB + Mongoose','NoSQL patient data store with schema validation and indexing for fast queries.'],
+      ['🔐','JWT Authentication','Secure token-based auth between frontend and backend, with refresh token support.'],
+      ['📡','REST API Layer','Clean separation between Server 1 (public) and Server 2 (authenticated dashboard).'],
+      ['🧠','Claude AI (Sonnet 4)','Medical NLP analysis via Anthropic API — lab report parsing, risk assessment, diagnosis hints.'],
+      ['📷','jsQR Library','Client-side QR code decoding from uploaded images — no server needed, instant results.'],
+      ['📊','Chart.js','Beautiful interactive charts for health analytics, lab result visualization, and trend tracking.'],
+      ['🌐','QR Server API','Dynamic QR code generation for patients, departments, medicines, reports, and ID cards.'],
+    ].map(([e,t,d])=>`
+    <div class="techCard">
+      <div style="font-size:26px;margin-bottom:9px">${e}</div>
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">${t}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.44);line-height:1.55">${d}</div>
+    </div>`).join('')}
+  </div>
+</section>
+
+<section class="ctaSec">
+  <div style="font-family:var(--fh);font-size:clamp(24px,3.5vw,42px);font-weight:800;margin-bottom:11px">Ready to Launch Your Capstone? 🎓</div>
+  <div style="font-size:15px;opacity:.72;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.65">IIT Patna · Computer Science & Data Analytics · 3rd Year · Final Semester 2026</div>
+  <div style="display:flex;gap:13px;justify-content:center;flex-wrap:wrap">
+    <button class="btn bWh bLg" onclick="update({showAuth:true,authMode:'signup'})">🔲 Launch MedSecure Pro</button>
+    <button class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);padding:13px 30px;font-size:15px;border-radius:12px" onclick="update({showAuth:true,authMode:'login'})">Sign In →</button>
+  </div>
+</section>
+
+<footer>
+  <div style="font-family:var(--fh);font-size:16px;font-weight:700;color:var(--tl);margin-bottom:7px">🛡 MedSecure Pro</div>
+  <p>© 2026 MedSecure Pro · IIT Patna Capstone Project · Computer Science &amp; Data Analytics · 3rd Year Final Semester</p>
+  <p style="margin-top:5px;font-size:11px;color:rgba(255,255,255,.25)">Microservices · React · Node.js · Express · MongoDB · JWT · Claude AI · jsQR · Chart.js</p>
+</footer>`;
+  }
+
+  // ── DASHBOARD ──
+  else if (page === 'dash' && user) {
+    let lastGrp = '';
+    const sidebarHTML = SIDEBAR_TABS.map(t => {
+      let grpH = '';
+      if (t.group !== lastGrp) { grpH = `<span class="sideGrp">${t.group}</span>`; lastGrp = t.group; }
+      return grpH + `<button class="sideTab ${STATE.tab===t.id?'active':''}" onclick="update({tab:'${t.id}'});renderTab()"><span class="sideTabIco">${t.icon}</span>${t.label}</button>`;
+    }).join('');
+
+    html += `
+<div class="dashWrap aFi">
+  <div class="dashNav">
+    <div class="brandLogo">
+      <div class="brandBox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <span class="brandName">MedSecure Pro</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:10px;color:var(--mu);background:var(--tbg);border:1px solid var(--tb);padding:2px 10px;border-radius:100px;font-weight:700">🏗 Server-2 · Microservice</span>
+      <div class="userChip"><div class="userDot">${ini(user.name)}</div>${user.name.split(' ')[0]}</div>
+      <button class="btn bRd bSm" onclick="logout()">⬋ Sign Out</button>
+    </div>
+  </div>
+  <div class="dashHead">
+    <div style="max-width:1160px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>
+        <h1 style="font-family:var(--fh);font-size:21px;font-weight:800;margin-bottom:3px">${PAGE_TITLES[STATE.tab]||'Dashboard'}</h1>
+        <p style="font-size:12px;opacity:.52">${user.email} · IIT Patna Capstone 2026 · CS &amp; Data Analytics</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${STATE.tab==='analyzer'?`<button class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:7px 13px;font-size:12px;border-radius:8px" onclick="document.getElementById('reportInput')&&(document.getElementById('reportInput').value=SAMPLE_REPORT)">📋 Load Sample</button>`:''}
+        ${STATE.tab==='hub'?`<button class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:7px 13px;font-size:12px;border-radius:8px" onclick="STATE.searchQuery='';renderTab()">✕ Clear Search</button>`:''}
+      </div>
+    </div>
+  </div>
+  <div class="dashLayout">
+    <nav class="sidebar">${sidebarHTML}</nav>
+    <div class="mainArea"><div id="tabContent"></div></div>
+  </div>
+</div>`;
+  }
+
+  // ── PUBLIC PROFILE ──
+  else if (page === 'pub') {
+    const pu = STATE.users.find(u => u.id === STATE.pubId);
+    if (pu) {
+      const sections = [
+        ['⚠️','Medical Conditions',pu.conditions],
+        ['⚠️','Allergies',pu.allergies],
+        ['💊','Current Medications',pu.medications],
+        ['📝','Doctor Notes',pu.notes],
+      ].filter(s => s[2]);
+
+      html += `
+<div class="pubWrap aFi">
+  <div class="pubHero">
+    <button onclick="${user?'update({page:\'dash\'})':'update({page:\'land\'})'}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--fh);font-size:12px;font-weight:700;color:rgba(255,255,255,.65);cursor:pointer;margin-bottom:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 14px;transition:all .2s" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.color='rgba(255,255,255,.65)';this.style.background='rgba(255,255,255,.1)'">
+      ← ${user ? 'Back to Dashboard' : 'Back to Home'}
+    </button>
+    <div class="pubAvatar">${ini(pu.name)}</div>
+    <div class="pubName">${pu.name}</div>
+    <div class="verBadge">✓ MedSecure Pro Verified</div>
+    <div class="pubMeta">
+      ${pu.age?`<span>🎂 ${pu.age} years old</span>`:''}
+      ${pu.gender?`<span>👤 ${pu.gender}</span>`:''}
+      <span>🩸 Blood: <strong>${pu.bloodGroup||'Not specified'}</strong></span>
+      ${pu.createdAt?`<span>📅 Member since ${pu.createdAt}</span>`:''}
+    </div>
+  </div>
+
+  <div class="pubBody">
+    <!-- Emergency Contact -->
+    ${pu.emergencyContact ? `
+    <div class="sosBox">
+      <div style="width:44px;height:44px;background:#fee2e2;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px">📞</div>
+      <div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:800;color:var(--red);margin-bottom:3px">🚨 EMERGENCY CONTACT</div>
+        <div style="font-size:17px;font-weight:700;color:var(--tx)">${pu.emergencyContact}</div>
+      </div>
+    </div>` : ''}
+
+    <!-- Allergy Alert -->
+    ${pu.allergies ? `
+    <div style="background:#fff3cd;border:1.5px solid #ffc107;border-radius:12px;padding:13px 16px;margin-bottom:14px;display:flex;gap:11px;align-items:flex-start">
+      <span style="font-size:22px;flex-shrink:0">⚠️</span>
+      <div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:800;color:#856404;margin-bottom:3px">KNOWN ALLERGIES</div>
+        <div style="font-size:14px;font-weight:600;color:#533f03">${pu.allergies}</div>
+      </div>
+    </div>` : ''}
+
+    <!-- Stats -->
+    <div class="statsGrid" style="margin-bottom:14px">
+      <div class="statCard"><div class="statLabel">Blood Group</div><div class="statValue">${pu.bloodGroup||'N/A'}</div></div>
+      <div class="statCard"><div class="statLabel">Age</div><div class="statValue">${pu.age?pu.age+' yrs':'N/A'}</div></div>
+      <div class="statCard"><div class="statLabel">Patient ID</div><div class="statValue" style="font-size:13px">#MS-${pu.id.slice(-6).toUpperCase()}</div></div>
+    </div>
+
+    <!-- Medical Sections -->
+    ${sections.length ? sections.map(([e,t,c])=>`
+    <div class="pubInfoBlock">
+      <div class="pubInfoHd">${e} ${t}</div>
+      <div class="pubInfoBd">${c}</div>
+    </div>`).join('') : `
+    <div class="pubInfoBlock">
+      <div class="pubInfoHd">📋 Medical Details</div>
+      <div class="pubInfoBd" style="color:var(--mu);font-style:italic">No medical details have been added to this profile yet.</div>
+    </div>`}
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:20px;padding:16px 20px;background:rgba(20,184,166,.07);border-radius:14px;border:1px solid rgba(20,184,166,.14)">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:800;color:var(--td);margin-bottom:5px">🛡 Powered by MedSecure Pro</div>
+      <div style="font-size:12px;color:var(--mu);line-height:1.55">Public read-only profile · No login required · Data encrypted<br>Microservice: Server 2 · IIT Patna Capstone · CS & Data Analytics</div>
+    </div>
+  </div>
+</div>`;
+    } else {
+      html += `<div style="text-align:center;padding:80px 24px"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-family:var(--fh);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px">Profile Not Found</div><button class="btn bGr" onclick="update({page:'land'})">← Go Home</button></div>`;
+    }
+  }
+
+  document.getElementById('root').innerHTML = html;
+  if (page === 'dash' && user) renderTab();
+}
+
+// Start
+render();
+</script>
+</body>
+</html>
